@@ -17,7 +17,7 @@ class CalendarHandler(BaseHTTPRequestHandler):
 
 		self.wfile.write(calendar.fix(cal))
 
-HOST_NAME = '127.0.0.1' #efw.srcf.net'
+HOST_NAME = 'efw.user.srcf.net'
 PORT_NUMBER = 8080
 
 if __name__ == '__main__':
