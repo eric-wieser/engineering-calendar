@@ -6,6 +6,7 @@ pattern = re.compile(r'(.*\])[CL] (.*)\((.*)\)')
 
 def fix(ical_string):
 	cal = icalendar.Calendar.from_ical(ical_string)
+	cal['X-WR-CALDESC'] = 'Filtered with location changes'
 
 	for event in cal.subcomponents:
 		if not isinstance(event, icalendar.Event):
