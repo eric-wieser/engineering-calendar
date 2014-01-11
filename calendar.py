@@ -2,7 +2,7 @@ import urllib2
 import icalendar
 import re
 
-pattern = re.compile(r'(.*\])(.*)\((.*)\)')
+pattern = re.compile(r'(.*\])[CL] (.*)\((.*)\)')
 
 def fix(ical_string):
 	cal = icalendar.Calendar.from_ical(ical_string)
