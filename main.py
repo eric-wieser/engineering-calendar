@@ -14,4 +14,12 @@ def index():
 
 	return calendar.fix(cal)
 
+@route('/<group>')
+def index(group):
+	response.content_type = 'text/calendar'
+	cal_req = urllib2.urlopen(cal_url)
+	cal = cal_req.read()
+
+	return calendar.fix(cal, group)
+
 run(host='efw27.user.srcf.net', port=8080)

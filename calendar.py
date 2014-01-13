@@ -10,9 +10,10 @@ last_updated = datetime(2014, 1, 13)
 
 pattern = re.compile(r'(.*\])[CL] (.*)\((.*)\)')
 
-def fix(ical_string):
+def fix(ical_string, lab_group=None):
 	cal = icalendar.Calendar.from_ical(ical_string)
 	cal['X-WR-CALDESC'] = 'Filtered with location changes'
+	cal['X-WR-CALNAME'] += ' (groups %s)' % lab_group
 
 	# parse data
 	data = {}
@@ -24,20 +25,35 @@ def fix(ical_string):
 		m = pattern.match(event['summary'])
 		data[id(event)] = (event,) + m.groups()
 
-	# find duplicate coursework events
-	duplicates = set()
-	seen = set()
-	for event, name, speaker, location in data.values():
-		if name in seen:
-			duplicates.add(name)
-		elif name.startswith('1CW'):
-			seen.add(name)
+	if lab_group != None:
+		# find duplicate coursework events
+		duplicates = set()
+		seen = set()
+		for event, name, speaker, location in data.values():
+			if name in seen:
+				duplicates.add(name)
+			elif name.startswith('1CW'):
+				seen.add(name)
 
-	#remove all of them
-	for event, name, speaker, location in data.values():
-		if name in duplicates:
-			cal.subcomponents.remove(event)
-			del data[id(event)]
+		#remove all of them
+		for event, name, speaker, location in data.values():
+			if name in duplicates:
+				cal.subcomponents.remove(event)
+				del data[id(event)]
+
+		# add the labs
+		for l in labs.lab_events(terms.lent, lab_group):
+			event = icalendar.Event()
+			event['summary']  = icalendar.vText(l.info.name)
+			event['location'] = icalendar.vText(l.info.location)
+			event['dtstart']  = icalendar.vDatetime(l.time.start)
+			event['dtend']    = icalendar.vDatetime(l.time.end)
+
+			event['dtstamp']  = icalendar.vDatetime(last_updated)
+
+			event['uid'] = l.uid
+
+			cal.subcomponents.append(event)
 
 	# add location information
 	for event, name, speaker, location in data.values():
@@ -45,19 +61,6 @@ def fix(ical_string):
 		event['location'] = icalendar.vText(location)
 		event['description'] = icalendar.vText(speaker)
 
-	# add the labs
-	for l in labs.lab_events(terms.lent):
-		event = icalendar.Event()
-		event['summary']  = icalendar.vText(l.info.name)
-		event['location'] = icalendar.vText(l.info.location)
-		event['dtstart']  = icalendar.vDatetime(l.time.start)
-		event['dtend']    = icalendar.vDatetime(l.time.end)
-
-		event['dtstamp']  = icalendar.vDatetime(last_updated)
-
-		event['uid'] = l.uid
-
-		cal.subcomponents.append(event)
 
 	return cal.to_ical()
 

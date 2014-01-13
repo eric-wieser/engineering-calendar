@@ -101,7 +101,8 @@ def parse_row(row):
 	return data, sd_week
 
 
-def lab_events(term):
+def lab_events(term, lab_group):
+
 	# build a lookup table
 	lab_lookup = {l.code: l for l in term.lab_info}
 	lab_lookup[' '] = None
@@ -109,7 +110,7 @@ def lab_events(term):
 	#day offsets
 	columns = [cw.thur, cw.fri, cw.mon, cw.tue, cw.wed]
 
-	regular, sd_week = term.timetable
+	regular, sd_week = term.timetable[lab_group]
 
 	for week_num, week in enumerate(regular):
 		for day_offset, lab_code in zip(columns, week):
