@@ -33,8 +33,6 @@ def fix(ical_string):
 		elif name.startswith('1CW'):
 			seen.add(name)
 
-	print '\n'.join(sorted(duplicates))
-
 	#remove all of them
 	for event, name, speaker, location in data.values():
 		if name in duplicates:
