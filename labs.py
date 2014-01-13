@@ -1,37 +1,74 @@
 from collections import namedtuple
 from datetime import time, timedelta, date, datetime
 
+
+def cambridge_weekday(date):
+	return (date.weekday() + 4) % 7
+
+cambridge_weekday.thur = 0
+cambridge_weekday.fri = 1
+cambridge_weekday.sat = 2
+cambridge_weekday.sun = 3
+cambridge_weekday.mon = 4
+cambridge_weekday.tue = 5
+cambridge_weekday.wed = 6
+
+cw = cambridge_weekday
+
 class TimeSlot(namedtuple('TimeSlot', 'start end')):
 	@classmethod
-	def morning(cls, day):
-		if day in ('mon', 'fri'):
-			return cls(time(9), time(11))
-		elif day in ('tue', 'thur'):
-			return cls(time(11), time(13))
+	def morning(cls, date):
+		day = cambridge_weekday(date)
+		if day in (cw.mon, cw.fri):
+			return cls(
+				datetime.combine(date, time(9)),
+				datetime.combine(date, time(11))
+			)
+		elif day in (cw.tue, cw.thur):
+			return cls(
+				datetime.combine(date, time(11)),
+				datetime.combine(date, time(13))
+			)
 
 	@classmethod
-	def morning_short(cls, day):
-		if day in ('mon', 'fri'):
-			return cls(time(9), time(10))
-		elif day in ('tue', 'thur'):
-			return cls(time(11), time(12))
+	def morning_short(cls, date):
+		day = cambridge_weekday(date)
+		if day in (cw.mon, cw.fri):
+			return cls(
+				datetime.combine(date, time(9)),
+				datetime.combine(date, time(10))
+			)
+		elif day in (cw.tue, cw.thur):
+			return cls(
+				datetime.combine(date, time(11)),
+				datetime.combine(date, time(12))
+			)
 
 	@classmethod
-	def afternoon_short(cls, day):
-		return cls(time(14), time(16))
+	def afternoon_short(cls, date):
+		return cls(
+			datetime.combine(date, time(14)), 
+			datetime.combine(date, time(16))
+		)
 
 	@classmethod
-	def afternoon(cls, day):
-		return cls(time(14), time(16, 30))
+	def afternoon(cls, date):
+		return cls(
+			datetime.combine(date, time(14)), 
+			datetime.combine(date, time(16, 30))
+		)
 
 	@classmethod
-	def afternoon_long(cls, day):
-		return cls(time(14), time(17))
+	def afternoon_long(cls, date):
+		return cls(
+			datetime.combine(date, time(14)), 
+			datetime.combine(date, time(17))
+		)
 
 
 class LabInfo(namedtuple('LabInfo', 'code name location time_slots')):
-	def times_on(self, day):
-		return [ctor(day) for ctor in self.time_slots]
+	def times_on(self, date):
+		return [ctor(date) for ctor in self.time_slots]
 
 def parse_row(row):
 	import re
@@ -60,7 +97,7 @@ def print_lab_events(term):
 	lab_lookup[' '] = None
 
 	#day offsets
-	days = [(0, 'thur'), (1, 'fri'), (4, 'mon'), (5, 'tue'), (6, 'wed')]
+	columns = [cw.thur, cw.fri, cw.mon, cw.tue, cw.wed]
 
 	regular, sd_week = term.timetable
 
@@ -69,26 +106,26 @@ def print_lab_events(term):
 			lab_info = lab_lookup[lab_code]
 			if lab_info is None:
 				continue
-			day_offset, day_name = days[column]
+			day_offset = columns[column]
 			lab_date = term.start_date + timedelta(day_offset + week_num * 7)
 
-			times = lab_info.times_on(day_name)
+			times = lab_info.times_on(lab_date)
 			for t in times:
 				print lab_info.name
 				print lab_info.location
-				print datetime.combine(lab_date, t.start) 
-				print datetime.combine(lab_date, t.end) 
+				print t.start
+				print t.end
 				print
 
 	lab_info = lab_lookup["SW"]
-	for day_offset, day_name in days:
+	for day_offset in columns:
 		lab_date = term.start_date + timedelta(day_offset + sd_week * 7)
 
-		times = lab_info.times_on(day_name)
+		times = lab_info.times_on(lab_date)
 		for t in times:
 			print lab_info.name
 			print lab_info.location
-			print datetime.combine(lab_date, t.start) 
-			print datetime.combine(lab_date, t.end) 
+			print t.start
+			print t.end
 			print
 
