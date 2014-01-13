@@ -24,14 +24,16 @@ def fix(ical_string):
 		m = pattern.match(event['summary'])
 		data[id(event)] = (event,) + m.groups()
 
-	# find duplicate events
+	# find duplicate coursework events
 	duplicates = set()
 	seen = set()
 	for event, name, speaker, location in data.values():
 		if name in seen:
 			duplicates.add(name)
-		else:
+		elif name.startswith('1CW'):
 			seen.add(name)
+
+	print '\n'.join(sorted(duplicates))
 
 	#remove all of them
 	for event, name, speaker, location in data.values():
