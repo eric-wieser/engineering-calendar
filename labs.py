@@ -67,8 +67,18 @@ class TimeSlot(namedtuple('TimeSlot', 'start end')):
 
 
 class LabInfo(namedtuple('LabInfo', 'code name location time_slots')):
-	def times_on(self, date):
-		return [ctor(date) for ctor in self.time_slots]
+	def on(self, date):
+		return [Lab(self, ctor(date)) for ctor in self.time_slots]
+
+class Lab(namedtuple('Lab', 'info time')):
+	@property
+	def uid(self):
+	    return '_'.join([
+	    	'178-180',
+	    	self.info.code,
+	    	self.time.start.isoformat()
+	    ]) + '@efw27.user.srcf.net'
+	
 
 def parse_row(row):
 	import re
@@ -91,7 +101,7 @@ def parse_row(row):
 	return data, sd_week
 
 
-def print_lab_events(term):
+def lab_events(term):
 	# build a lookup table
 	lab_lookup = {l.code: l for l in term.lab_info}
 	lab_lookup[' '] = None
@@ -102,30 +112,18 @@ def print_lab_events(term):
 	regular, sd_week = term.timetable
 
 	for week_num, week in enumerate(regular):
-		for column, lab_code in enumerate(week):
+		for day_offset, lab_code in zip(columns, week):
 			lab_info = lab_lookup[lab_code]
 			if lab_info is None:
 				continue
-			day_offset = columns[column]
 			lab_date = term.start_date + timedelta(day_offset + week_num * 7)
 
-			times = lab_info.times_on(lab_date)
-			for t in times:
-				print lab_info.name
-				print lab_info.location
-				print t.start
-				print t.end
-				print
+			for l in lab_info.on(lab_date):
+				yield l
 
 	lab_info = lab_lookup["SW"]
 	for day_offset in columns:
 		lab_date = term.start_date + timedelta(day_offset + sd_week * 7)
 
-		times = lab_info.times_on(lab_date)
-		for t in times:
-			print lab_info.name
-			print lab_info.location
-			print t.start
-			print t.end
-			print
-
+		for l in lab_info.on(lab_date):
+			yield l
