@@ -95,7 +95,7 @@ def parse_row(row):
 			assert week.endswith(']')
 			week = week[1:-1]
 			sd_week = i
-		labs = week.split(',')
+		labs = [l.strip() for l in week.split(',')]
 		data.append(labs)
 
 	return data, sd_week
@@ -105,7 +105,7 @@ def lab_events(term, lab_group):
 
 	# build a lookup table
 	lab_lookup = {l.code: l for l in term.lab_info}
-	lab_lookup[' '] = None
+	lab_lookup[''] = None
 
 	#day offsets
 	columns = [cw.thur, cw.fri, cw.mon, cw.tue, cw.wed]

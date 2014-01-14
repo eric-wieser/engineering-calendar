@@ -107,5 +107,6 @@ lab_info = [
 ]
 
 timetable = {}
-timetable['175-177'] = parse_row("| ,D, , | ,1,C, |9,D,C,10|IE,IE,IE,IE|11,D,S,3|12, ,S,4|S,D,S, [7,8, , ]")
-timetable['178-180'] = parse_row("| ,D, , | ,1,C, |9,D,C,10|IE,IE,IE,IE|11,D,S,3|12, ,S,4|S,D,S, [7,8, , ]")
+#                                  16 17 20 21 23 24 27 28 30 31  3  4  6  7 10 11 13 14 17 18 20 21 24 25 27 28  3  4  6  7 10 11
+timetable['175-177'] = parse_row("|  , D,  ,  |  , 1, C,  | 9, D, C,10|IE,IE,IE,IE|11, D, S, 3|12,  , S, 4| S, D, S,  [ 7, 8,  ,  ]")
+timetable['178-180'] = parse_row("|  , D,  ,  |  , 1, C,  | 9, D, C,10|IE,IE,IE,IE|11, D, S, 3|12,  , S, 4| S, D, S,  [ 7, 8,  ,  ]")
