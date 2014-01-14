@@ -67,6 +67,6 @@ def fix(ical_string, lab_group=None):
 if __name__ == '__main__':
 	with open('original.ics') as f:
 		ical = f.read()
-	ical = fix(ical)
+	ical = fix(ical, '178-180')
 	with open('fixed.ics', 'wb') as f:
 		f.write(ical)
