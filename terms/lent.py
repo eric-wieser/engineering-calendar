@@ -107,4 +107,5 @@ lab_info = [
 ]
 
 timetable = {}
+timetable['175-177'] = parse_row("| ,D, , | ,1,C, |9,D,C,10|IE,IE,IE,IE|11,D,S,3|12, ,S,4|S,D,S, [7,8, , ]")
 timetable['178-180'] = parse_row("| ,D, , | ,1,C, |9,D,C,10|IE,IE,IE,IE|11,D,S,3|12, ,S,4|S,D,S, [7,8, , ]")
