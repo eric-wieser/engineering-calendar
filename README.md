@@ -21,7 +21,7 @@ Before you can use it, someone needs to copy out your timetable row from [here](
 
 becomes:
 
-    timetable['178-180'] = parse_row("| ,D, , | ,1,C, |9,D,C,10|IE,IE,IE,IE|11,D,S,3|12, ,S,4|S,D,S, [7,8, , ]")
+    |  , D,  ,  |  , 1, C,  | 9, D, C,10|IE,IE,IE,IE|11, D, S, 3|12,  , S, 4| S, D, S,  [ 7, 8,  ,  ]
     
 Where the `|` are borders between weeks, and the `[` and `]` show the structural design project
 
