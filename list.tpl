@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
 	<head>
-
+		<link rel="icon" type="image/png" href="/calendar.png">
 		<title>Lent calendars</title>
 		<style type="text/css">
 		  html {background-color: #eee; font-family: sans;}
