@@ -112,9 +112,10 @@ def lab_events(term, lab_group):
 			for l in lab_info.on(lab_date):
 				yield l
 
-	lab_info = lab_lookup["SW"]
-	for day_offset in columns:
-		lab_date = term.start_date + timedelta(day_offset + sd_week * 7)
+	if sd_week is not None:
+		lab_info = lab_lookup["SW"]
+		for day_offset in columns:
+			lab_date = term.start_date + timedelta(day_offset + sd_week * 7)
 
-		for l in lab_info.on(lab_date):
-			yield l
+			for l in lab_info.on(lab_date):
+				yield l
