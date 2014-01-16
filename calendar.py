@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 import labs
-import terms.lent
+import terms.IA.lent
 
 last_updated = datetime(2014, 1, 13)
 
