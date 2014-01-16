@@ -42,7 +42,7 @@ def fix(ical_string, lab_group=None):
 				del data[id(event)]
 
 		# add the labs
-		for l in labs.lab_events(terms.lent, lab_group):
+		for l in labs.lab_events(terms.IA.lent, lab_group):
 			event = icalendar.Event()
 			event['summary']  = icalendar.vText(l.info.name)
 			event['location'] = icalendar.vText(l.info.location)
