@@ -30,19 +30,7 @@ class TimeSlot(namedtuple('TimeSlot', 'start end')):
 				datetime.combine(date, time(13))
 			)
 
-	@classmethod
-	def morning_short(cls, date):
-		day = cambridge_weekday(date)
-		if day in (cw.mon, cw.fri):
-			return cls(
-				datetime.combine(date, time(9)),
-				datetime.combine(date, time(10))
-			)
-		elif day in (cw.tue, cw.thur):
-			return cls(
-				datetime.combine(date, time(11)),
-				datetime.combine(date, time(12))
-			)
+	morning_short = morning
 
 	@classmethod
 	def afternoon_short(cls, date):
