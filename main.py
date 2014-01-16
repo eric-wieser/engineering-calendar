@@ -14,7 +14,9 @@ def index():
 def ia_lent_list():
 	from terms.IA.lent import timetable
 
-	return template('list', groups=timetable.keys())
+	groups = sorted(timetable.keys(), key=lambda g: map(int, g.split('-')))
+
+	return template('list', groups=groups)
 
 
 @route('/IA/lent/<group>')
