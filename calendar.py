@@ -51,7 +51,7 @@ def fix(ical_string, lab_group=None):
 
 			event['dtstamp']  = icalendar.vDatetime(last_updated)
 
-			event['uid'] = l.uid
+			event['uid'] = lab_group + l.uid
 
 			cal.subcomponents.append(event)
 

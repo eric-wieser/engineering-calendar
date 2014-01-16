@@ -61,11 +61,13 @@ class LabInfo(namedtuple('LabInfo', 'code name location time_slots')):
 class Lab(namedtuple('Lab', 'info time')):
 	@property
 	def uid(self):
-	    return '_'.join([
-	    	'178-180',
-	    	self.info.code,
-	    	self.time.start.isoformat()
-	    ]) + '@efw27.user.srcf.net'
+		return '.'.join([
+			'',
+			self.info.code,
+			self.time.start.isoformat(),
+			'IA',
+			'lent'
+		]) + '@efw27.user.srcf.net'
 	
 
 def parse_row(row):
