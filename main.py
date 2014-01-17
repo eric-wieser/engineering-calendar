@@ -1,6 +1,6 @@
 import urllib2
 
-from bottle import route, run, template, response, redirect, template
+from bottle import route, run, template, response, redirect, template, HTTPError
 
 import calendar
 
@@ -24,7 +24,10 @@ def ia_lent_calendar(group):
 	response.content_type = 'text/calendar'
 	cal_req = urllib2.urlopen(cal_url)
 	cal = cal_req.read()
-
-	return calendar.fix(cal, group)
+	try:
+		return calendar.fix(cal, group)
+	except KeyError:
+		raise HTTPError(404)
+		
 
 run(host='efw27.user.srcf.net', port=8080)
