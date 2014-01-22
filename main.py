@@ -19,15 +19,19 @@ def ia_lent_list():
 	return template('list', groups=groups)
 
 
-@route('/IA/lent/<group>')
+@route(r'/IA/lent/<group:re:\d+-\d+>.ics')
+@route(r'/IA/lent/<group:re:\d+-\d+>')
 def ia_lent_calendar(group):
-	response.content_type = 'text/calendar'
 	cal_req = urllib2.urlopen(cal_url)
 	cal = cal_req.read()
+
 	try:
-		return calendar.fix(cal, group)
+		cal = calendar.fix(cal, group)
 	except KeyError:
 		raise HTTPError(404)
-		
+
+	response.headers['Content-Disposition'] = 'attachment; filename="calendar.ics"'
+	response.content_type = 'text/calendar'
+	return cal
 
 run(host='efw27.user.srcf.net', port=8080)
