@@ -15,7 +15,7 @@ lab_info = [
 
 	LabInfo('IE',
 		'Integrated Electrical Project',
-		'IEP',
+		'EIETL',
 		[TimeSlot.morning, TimeSlot.afternoon]),
 
 	LabInfo('1',
