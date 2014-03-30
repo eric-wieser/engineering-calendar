@@ -29,6 +29,10 @@ class Timetable(object):
 				key = self._str_to_key(key)
 			except ValueError:
 				raise KeyError
+		if isinstance(key, int):
+			i = (key - 1) // 3
+			key = (i * 3 + 1, i * 3 +3)
+
 		return self.d[key]
 
 	@property
