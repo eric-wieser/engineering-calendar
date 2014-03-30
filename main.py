@@ -17,7 +17,7 @@ cal_url = {
 def index():
 	redirect('https://github.com/eric-wieser/engineering-calendar/blob/master/README.md')
 
-@route(r'/IA/<term:re:lent|easter>/')
+@route(r'/IA/<term:re:lent|easter>')
 def ia_lent_list(term):
 	return template('list', term=term, groups=getattr(terms.IA, term).timetable.groups)
 
