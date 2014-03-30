@@ -1,11 +1,14 @@
 import urllib2
 import icalendar
 import re
+import pytz
 from datetime import datetime
 
 import labs
 
-last_updated = datetime(2014, 1, 13)
+last_updated = pytz.utc.localize(datetime.utcnow())
+
+timezone = pytz.timezone("Europe/London")
 
 pattern = re.compile(r'(.*\])[CL] (.*)\((.*)\)')
 
@@ -45,8 +48,8 @@ def fix(ical_string, term, lab_group=None):
 			event = icalendar.Event()
 			event['summary']  = icalendar.vText(l.info.name)
 			event['location'] = icalendar.vText(l.info.location)
-			event['dtstart']  = icalendar.vDatetime(l.time.start)
-			event['dtend']    = icalendar.vDatetime(l.time.end)
+			event['dtstart']  = icalendar.vDatetime(timezone.localize(l.time.start).astimezone(pytz.utc))
+			event['dtend']    = icalendar.vDatetime(timezone.localize(l.time.end).astimezone(pytz.utc))
 
 			event['dtstamp']  = icalendar.vDatetime(last_updated)
 
