@@ -17,13 +17,9 @@ cal_url = {
 def index():
 	redirect('https://github.com/eric-wieser/engineering-calendar/blob/master/README.md')
 
-@route('/IA/lent')
-def ia_lent_list():
-	from terms.IA.lent import timetable
-
-	print timetable
-
-	return template('list', groups=timetable.groups)
+@route(r'/IA/<term:re:lent|easter>/')
+def ia_lent_list(term):
+	return template('list', term=term, groups=getattr(terms.IA, term).timetable.groups)
 
 
 @route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.ics')
