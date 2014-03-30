@@ -4,13 +4,12 @@ import re
 from datetime import datetime
 
 import labs
-import terms.IA.lent
 
 last_updated = datetime(2014, 1, 13)
 
 pattern = re.compile(r'(.*\])[CL] (.*)\((.*)\)')
 
-def fix(ical_string, lab_group=None):
+def fix(ical_string, term, lab_group=None):
 	cal = icalendar.Calendar.from_ical(ical_string)
 	cal['X-WR-CALDESC'] = 'Filtered with location changes'
 	cal['X-WR-CALNAME'] += ' (groups %s)' % lab_group
@@ -42,7 +41,7 @@ def fix(ical_string, lab_group=None):
 				del data[id(event)]
 
 		# add the labs
-		for l in labs.lab_events(terms.IA.lent, lab_group):
+		for l in labs.lab_events(term, lab_group):
 			event = icalendar.Event()
 			event['summary']  = icalendar.vText(l.info.name)
 			event['location'] = icalendar.vText(l.info.location)
