@@ -14,7 +14,8 @@
 		<h1>IA Lent calendars</h1>
 		<ul>
 			% for g in groups:
-				<li><a href="webcal://efw27.user.srcf.net:8080/IA/lent/{{g}}">{{g}}</a></li>
+				% name = "{}-{}".format(g[0], g[-1])
+				<li><a href="webcal://efw27.user.srcf.net:8080/IA/lent/{{name}}">{{name}}</a></li>
 			% end
 		</ul>
 		<a href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>

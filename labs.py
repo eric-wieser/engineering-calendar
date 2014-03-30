@@ -68,27 +68,6 @@ class Lab(namedtuple('Lab', 'info time')):
 			'IA',
 			'lent'
 		]) + '@efw27.user.srcf.net'
-	
-
-def parse_row(row):
-	import re
-	row = row.replace('[', '|[').replace(']', ']|')
-	weeks = row.split('|')
-	weeks = weeks[1:-1]
-	assert len(weeks) == 8
-
-	data = []
-	sd_week = None
-
-	for i, week in enumerate(weeks):
-		if week.startswith('['):
-			assert week.endswith(']')
-			week = week[1:-1]
-			sd_week = i
-		labs = [l.strip() for l in week.split(',')]
-		data.append(labs)
-
-	return data, sd_week
 
 
 def lab_events(term, lab_group):
