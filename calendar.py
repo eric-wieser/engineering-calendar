@@ -15,7 +15,7 @@ pattern = re.compile(r'(.*\])[CL] (.*)\((.*)\)')
 def fix(ical_string, term, lab_group=None):
 	cal = icalendar.Calendar.from_ical(ical_string)
 	cal['X-WR-CALDESC'] = 'Filtered with location changes'
-	cal['X-WR-CALNAME'] += ' (groups %s)' % lab_group
+	cal['X-WR-CALNAME'] += ' ({} - groups {})'.format(term.__name__.split('.')[-1].title(), lab_group)
 
 	# parse data
 	data = {}
