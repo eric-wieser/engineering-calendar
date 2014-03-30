@@ -86,7 +86,7 @@ def lab_events(term, lab_group):
 			lab_info = lab_lookup[lab_code]
 			if lab_info is None:
 				continue
-			lab_date = term.start_date + timedelta(day_offset + week_num * 7)
+			lab_date = term.timetable.start_date + timedelta(day_offset + week_num * 7)
 
 			for l in lab_info.on(lab_date):
 				yield l
@@ -94,7 +94,7 @@ def lab_events(term, lab_group):
 	if sd_week is not None:
 		lab_info = lab_lookup["SW"]
 		for day_offset in columns:
-			lab_date = term.start_date + timedelta(day_offset + sd_week * 7)
+			lab_date = term.timetable.start_date + timedelta(day_offset + sd_week * 7)
 
 			for l in lab_info.on(lab_date):
 				yield l

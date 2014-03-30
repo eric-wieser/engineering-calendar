@@ -1,11 +1,10 @@
 from datetime import date
-
-from ..IA import lab_info
 from timetable import Timetable
 
-start_date=date(2014, 1, 16)
+# reuse lab info
+from ..IA import lab_info
 
-timetable = Timetable({
+timetable = Timetable(date(2014, 1, 16), {
 	#           +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 	#           +     1     +     2     +     3     +     4     +     5     +     6     +     7     +     8     +
 	#           +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
