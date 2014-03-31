@@ -74,7 +74,7 @@ class Timetable(object):
 		self.d = {}
 		for k, v in grid.iteritems():
 			k = self._str_to_key(k)
-			v = list(self._events(v))
+			v = sorted(self._events(v), key=lambda e: e.time.start)
 
 			self.d[k] = v
 

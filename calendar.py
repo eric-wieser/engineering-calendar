@@ -59,7 +59,7 @@ def fix(ical_string, term, lab_group=None):
 
 			event['uid'] = lab_group + l.uid
 
-			for a in attendees:
+			for a in sorted(attendees, key=lambda a: a.name):
 				attendee = icalendar.vCalAddress('MAILTO:' + a.email)
 				attendee.params['cn'] = icalendar.vText(a.name)
 				attendee.params['ROLE'] = icalendar.vText('REQ-PARTICIPANT')
