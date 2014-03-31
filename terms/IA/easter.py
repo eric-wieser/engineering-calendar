@@ -4,8 +4,7 @@ from timetable import Timetable
 # reuse lab info
 from ..IA import lab_info
 
-timetable = Timetable(date(2014, 4, 24), {
-
+timetable = Timetable(start_date=date(2014, 4, 24), lab_info=lab_info, grid={
 '1-3':     '| D,  ,14, M| D,  ,  ,MA|  ,  ,  ,  |  ,  ',
 '4-6':     '| D,  ,14, M| D,  ,  ,MA|  ,  ,  ,  |  ,  ',
 '7-9':     '| D,14,  , M| D,  ,  ,MA|  ,  ,  ,  |  ,  ',

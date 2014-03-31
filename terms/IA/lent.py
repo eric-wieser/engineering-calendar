@@ -4,7 +4,7 @@ from timetable import Timetable
 # reuse lab info
 from ..IA import lab_info
 
-timetable = Timetable(date(2014, 1, 16), {
+timetable = Timetable(start_date=date(2014, 1, 16), lab_info=lab_info, grid={
 	#           +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 	#           +     1     +     2     +     3     +     4     +     5     +     6     +     7     +     8     +
 	#           +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+

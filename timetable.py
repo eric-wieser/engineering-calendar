@@ -31,13 +31,13 @@ class Timetable(object):
 
 		return data, sd_week
 
-	def __init__(self, start_date, d):
-		self.start_date = start_date
 
+	def __init__(self, start_date, lab_info, grid):
+		self.start_date = start_date
 		self.num_days = None
 
 		self.d = {}
-		for k, v in d.iteritems():
+		for k, v in grid.iteritems():
 			k = self._str_to_key(k)
 			v = self._parse_row(v)
 
