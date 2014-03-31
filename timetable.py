@@ -16,7 +16,7 @@ class Timetable(object):
 			row = row.replace(end, end + '|')
 
 		weeks = row.split('|')
-		weeks = weeks[1:-1]
+		weeks = [w for w in weeks if w]
 
 		data = []
 		sd_week = None
