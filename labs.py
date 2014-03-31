@@ -1,24 +1,12 @@
 from collections import namedtuple
 from datetime import time, timedelta, date, datetime
 
-
-def cambridge_weekday(date):
-	return (date.weekday() + 4) % 7
-
-cambridge_weekday.thur = 0
-cambridge_weekday.fri = 1
-cambridge_weekday.sat = 2
-cambridge_weekday.sun = 3
-cambridge_weekday.mon = 4
-cambridge_weekday.tue = 5
-cambridge_weekday.wed = 6
-
-cw = cambridge_weekday
+import cambridgeweekday as cw
 
 class TimeSlot(namedtuple('TimeSlot', 'start end')):
 	@classmethod
 	def morning(cls, date):
-		day = cambridge_weekday(date)
+		day = cw.of(date)
 		if day in (cw.mon, cw.fri):
 			return cls(
 				datetime.combine(date, time(9)),
