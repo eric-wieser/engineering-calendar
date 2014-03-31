@@ -41,6 +41,13 @@ class TimeSlot(namedtuple('TimeSlot', 'start end')):
 			datetime.combine(date, time(17))
 		)
 
+	@classmethod
+	def full_week_of(cls, slot):
+		offsets = (cw.thur, cw.fri, cw.mon, cw.tue, cw.wed)
+		def make_slot_maker(day):
+			return lambda date: slot(date + timedelta(day))
+
+		return [make_slot_maker(day) for day in offsets]
 
 class LabInfo(namedtuple('LabInfo', 'code name location time_slots')):
 	def on(self, date):
@@ -56,33 +63,3 @@ class Lab(namedtuple('Lab', 'info time')):
 			'IA',
 			'lent'
 		]) + '@efw27.user.srcf.net'
-
-
-def lab_events(term, lab_group):
-
-	# build a lookup table
-	lab_lookup = {l.code: l for l in term.lab_info}
-	lab_lookup[''] = None
-
-	#day offsets
-	columns = [cw.thur, cw.fri, cw.mon, cw.tue, cw.wed]
-
-	regular, sd_week = term.timetable[lab_group]
-
-	for week_num, week in enumerate(regular):
-		for day_offset, lab_code in zip(columns, week):
-			lab_info = lab_lookup[lab_code]
-			if lab_info is None:
-				continue
-			lab_date = term.timetable.start_date + timedelta(day_offset + week_num * 7)
-
-			for l in lab_info.on(lab_date):
-				yield l
-
-	if sd_week is not None:
-		lab_info = lab_lookup["SW"]
-		for day_offset in columns:
-			lab_date = term.timetable.start_date + timedelta(day_offset + sd_week * 7)
-
-			for l in lab_info.on(lab_date):
-				yield l

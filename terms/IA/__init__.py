@@ -97,10 +97,10 @@ lab_info = [
 		'Inglis Structures Lab',
 		[TimeSlot.morning]),
 
-	LabInfo('SW',
+	LabInfo('[]',
 		'Structural Design Workshop',
 		'Inglis Instrument Shop',
-		[TimeSlot.afternoon_long]),
+		TimeSlot.full_week_of(TimeSlot.afternoon_long)),
 
 	LabInfo('M',
 		'Microprocessors',
