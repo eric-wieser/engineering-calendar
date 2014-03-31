@@ -53,6 +53,9 @@ class LabInfo(namedtuple('LabInfo', 'code name location time_slots')):
 	def on(self, date):
 		return [Lab(self, ctor(date)) for ctor in self.time_slots]
 
+	__eq__ = object.__eq__
+	__hash__ = object.__hash__
+
 class Lab(namedtuple('Lab', 'info time')):
 	@property
 	def uid(self):
