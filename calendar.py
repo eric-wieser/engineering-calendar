@@ -5,6 +5,7 @@ import pytz
 from datetime import datetime
 
 import labs
+import students
 
 last_updated = pytz.utc.localize(datetime.utcnow())
 
@@ -45,6 +46,9 @@ def fix(ical_string, term, lab_group=None):
 
 		# add the labs
 		for l in term.timetable[lab_group]:
+			attendees = students.at_event(l)
+
+
 			event = icalendar.Event()
 			event['summary']  = icalendar.vText(l.info.name)
 			event['location'] = icalendar.vText(l.info.location)
@@ -54,6 +58,12 @@ def fix(ical_string, term, lab_group=None):
 			event['dtstamp']  = icalendar.vDatetime(last_updated)
 
 			event['uid'] = lab_group + l.uid
+
+			for a in attendees:
+				attendee = icalendar.vCalAddress('MAILTO:' + a.email)
+				attendee.params['cn'] = icalendar.vText(a.name)
+				attendee.params['ROLE'] = icalendar.vText('REQ-PARTICIPANT')
+				event.add('attendee', attendee)
 
 			cal.subcomponents.append(event)
 
