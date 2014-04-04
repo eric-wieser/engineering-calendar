@@ -51,9 +51,9 @@ def fix(ical_string, term, lab_group=None):
 
 			event = icalendar.Event()
 			if l.info.code.isdigit():
-				event['summary']  = icalendar.vText('1CW: ' + l.info.code + ' ' + l.info.name)
+				event['summary'] = icalendar.vText('1CW: ' + l.info.code + ' ' + l.info.name)
 			else:
-				event['summary']  = icalendar.vText('1CW: ' + l.info.name)
+				event['summary'] = icalendar.vText('1CW: ' + l.info.name)
 			event['location'] = icalendar.vText(l.info.location)
 			event['dtstart']  = icalendar.vDatetime(timezone.localize(l.time.start).astimezone(pytz.utc))
 			event['dtend']    = icalendar.vDatetime(timezone.localize(l.time.end).astimezone(pytz.utc))
@@ -80,6 +80,7 @@ def fix(ical_string, term, lab_group=None):
 			speaker + '\n\n' +
 			'Resources: http://to.eng.cam.ac.uk/teaching/courses/y1/'
 		)
+		event['dtstamp'] = icalendar.vDatetime(last_updated)
 
 
 	return cal.to_ical()
