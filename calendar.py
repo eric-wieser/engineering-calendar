@@ -50,7 +50,10 @@ def fix(ical_string, term, lab_group=None):
 
 
 			event = icalendar.Event()
-			event['summary']  = icalendar.vText(l.info.name)
+			if l.info.code.isdigit():
+				event['summary']  = icalendar.vText('1CW: ' + l.info.code + ' ' + l.info.name)
+			else:
+				event['summary']  = icalendar.vText('1CW: ' + l.info.name)
 			event['location'] = icalendar.vText(l.info.location)
 			event['dtstart']  = icalendar.vDatetime(timezone.localize(l.time.start).astimezone(pytz.utc))
 			event['dtend']    = icalendar.vDatetime(timezone.localize(l.time.end).astimezone(pytz.utc))
@@ -58,6 +61,8 @@ def fix(ical_string, term, lab_group=None):
 			event['dtstamp']  = icalendar.vDatetime(last_updated)
 
 			event['uid'] = lab_group + l.uid
+
+			event['description'] = icalendar.vText('Feedback: http://www-g.eng.cam.ac.uk/ssjc/labs.html')
 
 			for a in sorted(attendees, key=lambda a: a.name):
 				attendee = icalendar.vCalAddress('MAILTO:' + a.email)
@@ -71,7 +76,10 @@ def fix(ical_string, term, lab_group=None):
 	for event, module, name, week, speaker, location in data.values():
 		event['summary'] = icalendar.vText(module + ': ' + name)
 		event['location'] = icalendar.vText(location)
-		event['description'] = icalendar.vText(speaker)
+		event['description'] = icalendar.vText(
+			speaker + '\n\n' +
+			'Resources: http://to.eng.cam.ac.uk/teaching/courses/y1/'
+		)
 
 
 	return cal.to_ical()
