@@ -77,8 +77,9 @@ def fix(ical_string, term, lab_group=None):
 	return cal.to_ical()
 
 if __name__ == '__main__':
+	import terms.IA.lent
 	with open('original.ics') as f:
 		ical = f.read()
-	ical = fix(ical, '178-180')
+	ical = fix(ical, terms.IA.lent, '178-180')
 	with open('fixed.ics', 'wb') as f:
 		f.write(ical)
