@@ -11,7 +11,7 @@ last_updated = pytz.utc.localize(datetime.utcnow())
 
 timezone = pytz.timezone("Europe/London")
 
-pattern = re.compile(r'(.*\])[CL] (.*)\((.*)\)')
+pattern = re.compile(r'(.*?)/(.*)\[(\d+)\][CL] (.*)\((.*)\)')
 
 def fix(ical_string, term, lab_group=None):
 	cal = icalendar.Calendar.from_ical(ical_string)
@@ -32,14 +32,14 @@ def fix(ical_string, term, lab_group=None):
 		# find duplicate coursework events
 		duplicates = set()
 		seen = set()
-		for event, name, speaker, location in data.values():
+		for event, module, name, week, speaker, location in data.values():
 			if name in seen:
 				duplicates.add(name)
-			elif name.startswith('1CW'):
+			elif module == '1CW' and 'Examples' not in name:
 				seen.add(name)
 
 		#remove all of them
-		for event, name, speaker, location in data.values():
+		for event, module, name, week, speaker, location in data.values():
 			if name in duplicates:
 				cal.subcomponents.remove(event)
 				del data[id(event)]
@@ -68,8 +68,8 @@ def fix(ical_string, term, lab_group=None):
 			cal.subcomponents.append(event)
 
 	# add location information
-	for event, name, speaker, location in data.values():
-		event['summary'] = icalendar.vText(name)
+	for event, module, name, week, speaker, location in data.values():
+		event['summary'] = icalendar.vText(module + ': ' + name)
 		event['location'] = icalendar.vText(location)
 		event['description'] = icalendar.vText(speaker)
 
