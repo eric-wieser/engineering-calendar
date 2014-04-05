@@ -1,68 +1,51 @@
-from collections import namedtuple
-from datetime import time, timedelta, date, datetime
+from datetime import datetime
 
-import cambridgeweekday as cw
+import icalendar
+import pytz
 
-class TimeSlot(namedtuple('TimeSlot', 'start end')):
-	@classmethod
-	def morning(cls, date):
-		day = cw.of(date)
-		if day in (cw.mon, cw.fri):
-			return cls(
-				datetime.combine(date, time(9)),
-				datetime.combine(date, time(11))
-			)
-		elif day in (cw.tue, cw.thur):
-			return cls(
-				datetime.combine(date, time(11)),
-				datetime.combine(date, time(13))
-			)
+import students
+import terms.IA.lent
+import terms.IA.easter
 
-	morning_short = morning
+last_updated = pytz.utc.localize(datetime.utcnow())
+timezone = pytz.timezone("Europe/London")
 
-	@classmethod
-	def afternoon_short(cls, date):
-		return cls(
-			datetime.combine(date, time(14)), 
-			datetime.combine(date, time(16))
-		)
+def events_for_term(term, lab_group):
+	try:
+		term = getattr(terms.IA, term)
+	except KeyError:
+		return None
 
-	@classmethod
-	def afternoon(cls, date):
-		return cls(
-			datetime.combine(date, time(14)), 
-			datetime.combine(date, time(16, 30))
-		)
+	events = []
 
-	@classmethod
-	def afternoon_long(cls, date):
-		return cls(
-			datetime.combine(date, time(14)), 
-			datetime.combine(date, time(17))
-		)
+	# add the labs
+	for l in term.timetable[lab_group]:
+		attendees = students.at_event(l)
 
-	@classmethod
-	def full_week_of(cls, slot):
-		offsets = (cw.thur, cw.fri, cw.mon, cw.tue, cw.wed)
-		def make_slot_maker(day):
-			return lambda date: slot(date + timedelta(day))
+		event = icalendar.Event()
+		if l.info.code.isdigit():
+			event['summary'] = icalendar.vText('1CW: ' + l.info.code + ' ' + l.info.name)
+		else:
+			event['summary'] = icalendar.vText('1CW: ' + l.info.name)
+		event['location'] = icalendar.vText(l.info.location)
+		event['dtstart']  = icalendar.vDatetime(timezone.localize(l.time.start).astimezone(pytz.utc))
+		event['dtend']    = icalendar.vDatetime(timezone.localize(l.time.end).astimezone(pytz.utc))
 
-		return [make_slot_maker(day) for day in offsets]
+		event['dtstamp']  = icalendar.vDatetime(last_updated)
 
-class LabInfo(namedtuple('LabInfo', 'code name location time_slots')):
-	def on(self, date):
-		return [Lab(self, ctor(date)) for ctor in self.time_slots]
+		event['uid'] = lab_group + l.uid
 
-	__eq__ = object.__eq__
-	__hash__ = object.__hash__
+		event['description'] = icalendar.vText('Feedback: http://www-g.eng.cam.ac.uk/ssjc/labs.html')
 
-class Lab(namedtuple('Lab', 'info time')):
-	@property
-	def uid(self):
-		return '.'.join([
-			'',
-			self.info.code,
-			self.time.start.isoformat(),
-			'IA',
-			'lent'
-		]) + '@efw27.user.srcf.net'
+		for a in sorted(attendees, key=lambda a: a.name):
+			attendee = icalendar.vCalAddress('MAILTO:' + a.email)
+			attendee.params['cn'] = icalendar.vText(a.name)
+			attendee.params['ROLE'] = icalendar.vText('REQ-PARTICIPANT')
+			event.add('attendee', attendee)
+
+		events.append(event)
+
+	return events
+
+if __name__ == '__main__':
+	print events_for_term('lent', '178-180')

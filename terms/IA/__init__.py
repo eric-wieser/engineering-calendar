@@ -1,4 +1,4 @@
-from labs import TimeSlot, LabInfo
+from timetable import TimeSlot, LabInfo
 
 lab_info = [
 	LabInfo('D',

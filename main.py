@@ -43,36 +43,26 @@ class ICalPlugin(object):
 
 install(ICalPlugin())
 
-cal_url = {
-	'lent': "http://td.eng.cam.ac.uk/tod/public/view_ical.php?yearval=2013_14&term=L&course=IA",
-	'easter': "http://td.eng.cam.ac.uk/tod/public/view_ical.php?yearval=2013_14&term=E&course=IA"
-}
-
-
 @route('/')
 def index():
 	redirect('https://github.com/eric-wieser/engineering-calendar/blob/master/README.md')
 
 @route(r'/IA/<term:re:lent|easter>')
-def ia_lent_list(term):
+def ia_term_list(term):
 	return template('list', term=term, groups=getattr(terms.IA, term).timetable.groups)
 
 
 @route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.ics')
 @route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>')
 @route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.txt')
-def ia_lent_calendar(term, group):
-	cal = lectures.ical_for_term(term)
-
+def ia_term_calendar(term, group):
 	try:
-		term = getattr(terms.IA, term)
+		return calendar.construct(term, group)
 	except KeyError:
 		raise HTTPError(404)
 
-	return calendar.fix(cal, term, group)
-
 @route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.original.txt')
-def ia_lent_calendar(term, group):
+def ia_term_raw_calendar(term, group):
 	response.content_type = 'text/plain'
 	return lectures.ical_for_term(term)
 
