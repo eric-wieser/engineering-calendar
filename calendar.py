@@ -83,7 +83,7 @@ def fix(ical_string, term, lab_group=None):
 		event['dtstamp'] = icalendar.vDatetime(last_updated)
 
 
-	return cal.to_ical()
+	return cal
 
 if __name__ == '__main__':
 	import terms.IA.lent

@@ -1,11 +1,47 @@
-import urllib2
-
-from bottle import route, run, template, response, redirect, template, HTTPError, request
+from bottle import route, run, template, response, redirect, template, HTTPError, request, install
 
 import calendar
 
 import terms.IA.lent
 import terms.IA.easter
+import lectures
+
+import icalendar
+
+
+class ICalPlugin(object):
+	name = 'ical'
+	api  = 2
+
+	def apply(self, callback, route):
+		def wrapper(*a, **ka):
+			try:
+				rv = callback(*a, **ka)
+			except HTTPError:
+				rv = _e()
+
+			text_override = request.url.endswith('.txt')
+
+			if isinstance(rv, icalendar.Calendar):
+				ical_response = rv.to_ical()
+				if text_override:
+					response.content_type = 'text/plain'
+				else:
+					response.content_type = 'text/calendar'
+					response.headers['Content-Disposition'] = 'attachment; filename="calendar.ics"'
+				return ical_response
+			elif isinstance(rv, HTTPResponse) and isinstance(rv.body, icalendar.Calendar):
+				rv.body = rv.body.to_ical()
+				if text_override:
+					rv.content_type = 'text/plain'
+				else:
+					rv.content_type = 'text/calendar'
+					rv.headers['Content-Disposition'] = 'attachment; filename="calendar.ics"'
+			return rv
+
+		return wrapper
+
+install(ICalPlugin())
 
 cal_url = {
 	'lent': "http://td.eng.cam.ac.uk/tod/public/view_ical.php?yearval=2013_14&term=L&course=IA",
@@ -26,19 +62,18 @@ def ia_lent_list(term):
 @route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>')
 @route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.txt')
 def ia_lent_calendar(term, group):
-	cal_req = urllib2.urlopen(cal_url[term])
-	cal = cal_req.read()
+	cal = lectures.ical_for_term(term)
 
 	try:
-		cal = calendar.fix(cal, getattr(terms.IA, term), group)
+		term = getattr(terms.IA, term)
 	except KeyError:
 		raise HTTPError(404)
 
-	if request.url.endswith('.txt'):
-		response.content_type = 'text/plain'
-	else:
-		response.headers['Content-Disposition'] = 'attachment; filename="calendar.ics"'
-		response.content_type = 'text/calendar'
-	return cal
+	return calendar.fix(cal, term, group)
+
+@route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.original.txt')
+def ia_lent_calendar(term, group):
+	response.content_type = 'text/plain'
+	return lectures.ical_for_term(term)
 
 run(host='efw27.user.srcf.net', port=8080)
