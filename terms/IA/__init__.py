@@ -110,5 +110,5 @@ lab_info = [
 	LabInfo('MA',
 		'Microprocessors',
 		'EIETL',
-		[TimeSlot.afternoon_short])
+		[TimeSlot.morning])
 ]
