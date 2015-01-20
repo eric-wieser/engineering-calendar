@@ -6,6 +6,16 @@ def color(code):
 	i = 360 * codes.index(code) // len(codes)
 	return "hsla({}, 100%, 75%, 0.5)".format(i)
 end
+
+def striped_color(code):
+	c = color(code)
+	return """repeating-linear-gradient(45deg,
+		{0},
+		{0} 11.31px,
+		transparent 11.31px,
+		transparent 22.62px)
+	""".format(c)
+end
 %>
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
@@ -86,15 +96,16 @@ end
 									% if (group, d) in skip:
 										% continue
 									% end
+									% ls = labs[d]
 
-									% seen_labs |= set(labs[d])
+									% seen_labs |= set(ls)
 
 									<%
 									# iterate over adjacent entries which match vertically
-									n = 1
+									nrows = 1
 									for g in tt.groups[gi+1:]:
-										if tt.labs_for(g)[d] == labs[d] and labs[d]:
-											n += 1
+										if tt.labs_for(g)[d] == ls and ls:
+											nrows += 1
 											skip.add((g, d))
 										else:
 											break
@@ -102,15 +113,22 @@ end
 									end
 									%>
 
-									% if len(labs[d]) == 1:
-										% l = labs[d][0];
+									% if len(ls) == 0:
+										<td></td>
+									% elif len(ls) == 1:
+										% l = ls[0];
 
 
-										<td rowspan="{{n}}" title="{{l.name}}&NewLine;{{l.location}}"style="background-color: {{ color(l.code) }}">
+										<td rowspan="{{nrows}}" title="{{l.name}}&NewLine;{{l.location}}"style="background-color: {{ color(l.code) }}">
 											<tt>{{ l.code }}</tt>
 										</td>
+									% elif len(labs[d]) == 2:
+										% l1, l2 = ls;
+										<td rowspan="{{nrows}}" title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"style="background-color: {{ color(l1.code) }}; background-image: {{ striped_color(l2.code) }}">
+											<tt>{{ l1.code }}<br />{{l2.code}}</tt>
+										</td>
 									% else:
-										<td rowspan="{{n}}" class="small">
+										<td rowspan="{{nrows}}" class="small">
 											{{ ','.join(l.code for l in labs[d]) }}
 										</td>
 									% end
