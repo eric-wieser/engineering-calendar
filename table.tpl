@@ -118,6 +118,32 @@ end
 							</tr>
 						% end
 					</tbody>
+					<thead>
+						<tr>
+							<th colspan="2"></th>
+							% for d in tt.dates:
+								<th>{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
+							% end
+						</tr>
+						<tr>
+							<th colspan="2"></th>
+							% last = None
+							% n = 0
+							% for d in tt.dates:
+								% if not last:
+									% last = d
+									% n = 1
+								% elif d.month != last.month:
+									<th class="mo" colspan="{{n}}">{{ '{:%B}'.format(last) }}</th>
+									% last = d
+									% n = 1
+								% else:
+									% n += 1
+								% end
+							% end
+							<th class="mo" colspan="{{n}}">{{ '{:%B}'.format(last) }}</th>
+						</tr>
+					</thead>
 				</table>
 			</div>
 			<div>
