@@ -36,6 +36,7 @@ end
 				min-width: {{ 25 * (len(tt.dates) + 2) }}px !important;
 				max-width: auto !important;
 			}
+			/* */
 		</style>
 	</head>
 	<body>
@@ -89,7 +90,7 @@ end
 									# iterate over adjacent entries which match vertically
 									n = 1
 									for g in tt.groups[gi+1:]:
-										if tt.labs_for(g)[d] == labs[d]:
+										if tt.labs_for(g)[d] == labs[d] and labs[d]:
 											n += 1
 											skip.add((g, d))
 										else:
