@@ -15,8 +15,8 @@ def construct(part, term, lab_group):
 	labs = events_for_term(part, term, lab_group)
 
 	cal = icalendar.Calendar()
-	cal['X-WR-CALNAME'] = 'CUED {part} {term} lab timetable - groups {groups}'.format(
-		part=part,
+	cal['X-WR-CALNAME'] = 'CUED {part} {term} lab timetable - Groups {groups}'.format(
+		part=part.upper(),
 		term=term.title(),
 		groups=lab_group
 	)
