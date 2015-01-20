@@ -48,6 +48,12 @@ def ia_term_list(part, term):
 	timetable = CourseYear('{}.xls'.format(part)).term(term)
 	return template('list', part=part, term=term, groups=timetable.groups)
 
+@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/table')
+def ia_term_table(part, term):
+	timetable = CourseYear('{}.xls'.format(part)).term(term)
+	return template('table', part=part, term=term, tt=timetable)
+
+
 
 @route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')
 def ia_term_calendar(part, term, group):
