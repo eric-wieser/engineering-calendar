@@ -53,5 +53,9 @@ def ia_term_list(part, term):
 def ia_term_calendar(part, term, group):
 	return calendar.construct(part, term, group)
 
+app = bottle.default_app()
+root = bottle.Bottle()
+root.mount('/cued-labs', app)
+
 if __name__ == '__main__':
-	bottle.run(host='localhost', port=8090)
+	bottle.run(root, host='localhost', port=8090, debug=True)
