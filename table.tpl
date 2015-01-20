@@ -40,6 +40,7 @@ end
 		</style>
 	</head>
 	<body>
+		% seen_labs = set()
 		<div class="container">
 			<h1>Part {{part.upper()}}, {{term.title()}} lab calendars</h1>
 			<p>Group names in the left column link to the web calendars</p>
@@ -86,6 +87,8 @@ end
 										% continue
 									% end
 
+									% seen_labs |= set(labs[d])
+
 									<%
 									# iterate over adjacent entries which match vertically
 									n = 1
@@ -121,7 +124,7 @@ end
 				<h2>Key</h2>
 				<%
 				import itertools
-				labs = sorted(tt.course.labs.values(), key=lambda l: (l.group, l.code))
+				labs = sorted(seen_labs, key=lambda l: (l.group, l.code))
 
 				grouped = [(group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
 				grouped = sorted(grouped, key=lambda (g, l): len(l), reverse=True)
