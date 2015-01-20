@@ -13,8 +13,8 @@ class ICalPlugin(object):
 		def wrapper(*a, **ka):
 			try:
 				rv = callback(*a, **ka)
-			except HTTPError:
-				rv = _e()
+			except HTTPError as e:
+				rv = e
 
 			text_override = request.url.endswith('.txt')
 
