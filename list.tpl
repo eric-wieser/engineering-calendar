@@ -13,8 +13,7 @@
 	<body>
 		<h1>IA {{term.title()}} calendars</h1>
 		<ul>
-			% for g in groups:
-				% name = "{}-{}".format(g[0], g[-1])
+			% for name in groups:
 				<li><a href="webcal://efw27.user.srcf.net:8080/IA/{{term}}/{{name}}.ics">{{name}}</a></li>
 			% end
 		</ul>

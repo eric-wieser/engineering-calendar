@@ -3,7 +3,7 @@ import bottle
 import icalendar
 
 import calendar
-import lectures
+from objects import CourseYear
 
 class ICalPlugin(object):
 	name = 'ical'
@@ -43,24 +43,15 @@ bottle.install(ICalPlugin())
 def index():
 	redirect('https://github.com/eric-wieser/engineering-calendar/blob/master/README.md')
 
-@route(r'/IA/<term:re:lent|easter>')
-def ia_term_list(term):
-	return template('list', term=term, groups=getattr(terms.IA, term).timetable.groups)
+@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>')
+def ia_term_list(part, term):
+	timetable = CourseYear('{}.xls'.format(part)).term(term)
+	return template('list', term=term, groups=timetable.groups)
 
 
-@route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.ics')
-@route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>')
-@route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.txt')
-def ia_term_calendar(term, group):
-	try:
-		return calendar.construct('IA', term, group)
-	except KeyError:
-		raise HTTPError(404)
-
-@route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.original.txt')
-def ia_term_raw_calendar(term, group):
-	response.content_type = 'text/plain'
-	return lectures.ical_for_term(term)
+@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')
+def ia_term_calendar(part, term, group):
+	return calendar.construct(part, term, group)
 
 if __name__ == '__main__':
-	bottle.run(host='localhost', port=8080)
+	bottle.run(host='localhost', port=8090)
