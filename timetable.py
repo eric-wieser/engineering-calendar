@@ -8,8 +8,6 @@ import cambridgeweekday as cw
 parens = ('[]', '{}', '[]')
 
 class Timetable(object):
-	columns = [cw.thur, cw.fri, cw.mon, cw.tue]
-
 	@staticmethod
 	def _str_to_key(s):
 		return tuple(map(int, s.split('-')))
@@ -65,9 +63,10 @@ class Timetable(object):
 		self.num_days = num_days
 
 
-	def __init__(self, start_date, lab_info, grid):
+	def __init__(self, start_date, lab_info, columns, grid):
 		self.start_date = start_date
 		self.num_days = None
+		self.columns = columns
 
 		self._lab_lookup = {l.code: l for l in lab_info}
 		self._lab_lookup[''] = None

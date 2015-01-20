@@ -8,12 +8,13 @@ import pytz
 
 last_updated = pytz.utc.localize(datetime.utcnow())
 
-def ical_for_term(term):
-	cal_url = {
-		'lent': "http://td.eng.cam.ac.uk/tod/public/view_ical.php?yearval=2013_14&term=L&course=IA",
-		'easter': "http://td.eng.cam.ac.uk/tod/public/view_ical.php?yearval=2013_14&term=E&course=IA"
-	}
-	cal_req = urllib2.urlopen(cal_url[term])
+def ical_for_term(part, term):
+	cal_url = "http://td.eng.cam.ac.uk/tod/public/view_ical.php?yearval={year}&term={term}&course={part}".format(
+		year='2013_14',
+		term=term[0].upper(),
+		part=part
+	)
+	cal_req = urllib2.urlopen(cal_url)
 	cal = cal_req.read()
 	return cal
 
@@ -21,8 +22,8 @@ def ical_for_term(term):
 pattern = re.compile(r'(.*?)/(.*)\[(\d+)\][CL] (.*)\((.*)\)')
 MatchData = namedtuple('MatchData', 'module name week speaker location')
 
-def events_for_term(term):
-	ical_string = ical_for_term(term)
+def events_for_term(part, term):
+	ical_string = ical_for_term(part, term)
 	cal = icalendar.Calendar.from_ical(ical_string)
 
 	events = []
@@ -65,4 +66,4 @@ def events_for_term(term):
 	return events
 
 if __name__ == '__main__':
-	print events_for_term('lent')
+	print events_for_term('IA', 'lent')

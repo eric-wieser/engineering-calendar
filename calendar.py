@@ -3,16 +3,20 @@ import icalendar
 import labs
 import lectures
 
-def construct(term, lab_group):
-	lcs = lectures.events_for_term(term)
-	lbs = labs.events_for_term(term, lab_group)
+def construct(part, term, lab_group):
+	lcs = lectures.events_for_term(part, term)
+	lbs = labs.events_for_term(part, term, lab_group)
 
 	if lbs is None:
 		raise KeyError("No such group")
 
 	cal = icalendar.Calendar()
 	cal['X-WR-CALDESC'] = 'Filtered with location changes'
-	cal['X-WR-CALNAME'] = 'CUED IA {} timetable - groups {}'.format(term.title(), lab_group)
+	cal['X-WR-CALNAME'] = 'CUED {part} {term} timetable - groups {groups}'.format(
+		part=part,
+		term=term.title(),
+		groups=lab_group
+	)
 	cal['VERSION'] = '2.0'
 	cal['PRODID'] = '-//td.eng.cam.ac.uk/tod//'
 	cal.subcomponents += lcs

@@ -4,16 +4,16 @@ import icalendar
 import pytz
 
 import students
-import terms.IA.lent
-import terms.IA.easter
+import terms
 
 last_updated = pytz.utc.localize(datetime.utcnow())
 timezone = pytz.timezone("Europe/London")
 
-def events_for_term(term, lab_group):
+def events_for_term(part, term, lab_group):
 	try:
-		term = getattr(terms.IA, term)
-	except KeyError:
+		course = getattr(terms, part)
+		term = getattr(course, term)
+	except ImportError:
 		return None
 
 	events = []

@@ -1,14 +1,9 @@
 from bottle import route, template, response, redirect, template, HTTPError, request
 import bottle
-
-import calendar
-
-import terms.IA.lent
-import terms.IA.easter
-import lectures
-
 import icalendar
 
+import calendar
+import lectures
 
 class ICalPlugin(object):
 	name = 'ical'
@@ -58,7 +53,7 @@ def ia_term_list(term):
 @route(r'/IA/<term:re:lent|easter>/<group:re:\d+-\d+>.txt')
 def ia_term_calendar(term, group):
 	try:
-		return calendar.construct(term, group)
+		return calendar.construct('IA', term, group)
 	except KeyError:
 		raise HTTPError(404)
 
@@ -67,4 +62,5 @@ def ia_term_raw_calendar(term, group):
 	response.content_type = 'text/plain'
 	return lectures.ical_for_term(term)
 
-bottle.run(host='efw27.user.srcf.net', port=8080)
+if __name__ == '__main__':
+	bottle.run(host='localhost', port=8080)
