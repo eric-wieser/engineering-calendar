@@ -69,7 +69,16 @@ stripe_class.data = {}
 		% seen_labs = set()
 		<div class="container">
 			<h1>Part {{part.upper()}}, {{term.title()}} lab calendars</h1>
-			<p>Group names in the left column link to the web calendars</p>
+			<div class="row">
+				<div class="col-md-6">
+					<p>The table below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
+					<p>If you spot a mistake, please report it to <code>efw27</code>. I continue to claim no responsibility for missed labs due to false information.</p>
+				</div>
+				<div class="col-md-6">
+					<p>Known to work with google calendar, assumed to work with iCalendar and live calendar.</p>
+					<p>If you're lucky, clicking on the links should open the calendars in your default program. If you're not, copy the url of your group link, and follow online instructions for subscribing to an "ICS" or "iCal" web calendar.</p>
+				</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-bordered table-condensed small" style="table-layout: fixed">
 					<thead>
