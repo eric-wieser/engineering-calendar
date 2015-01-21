@@ -93,6 +93,23 @@ stripe_class.data = {}
 						</tr>
 						<tr>
 							<th colspan="2"></th>
+							% first = tt.dates[0]
+							% last_w = 0
+							% n = 0
+							% for d in tt.dates:
+								% w = (d - first).days // 7
+								% if w != last_w:
+									<th class="we" colspan="{{n}}">{{ last_w + 1 }}</th>
+									% last_w = w
+									% n = 1
+								% else:
+									% n += 1
+								% end
+							% end
+							<th class="we" colspan="{{n}}">{{ last_w + 1 }}</th>
+						</tr>
+						<tr>
+							<th colspan="2"></th>
 							% for d in tt.dates:
 								<th>{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
 							% end
@@ -171,6 +188,23 @@ stripe_class.data = {}
 							% for d in tt.dates:
 								<th>{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
 							% end
+						</tr>
+						<tr>
+							<th colspan="2"></th>
+							% first = tt.dates[0]
+							% last_w = 0
+							% n = 0
+							% for d in tt.dates:
+								% w = (d - first).days // 7
+								% if w != last_w:
+									<th class="we" colspan="{{n}}">{{ last_w + 1 }}</th>
+									% last_w = w
+									% n = 1
+								% else:
+									% n += 1
+								% end
+							% end
+							<th class="we" colspan="{{n}}">{{ last_w + 1 }}</th>
 						</tr>
 						<tr>
 							<th colspan="2"></th>
