@@ -1,30 +1,36 @@
 % from bottle import request
 % import re
 <%
-def color(code):
+def color(code, alpha=0.1):
 	codes = sorted(tt.course.labs.keys())
 	i = 360 * codes.index(code) // len(codes)
-	return "hsla({}, 75%, 50%, 0.1)".format(i)
+	return "hsla({}, 100%, 50%, {})".format(i, alpha)
 end
 
-def single_color(code1):
-	c1 = color(code1)
-	return """repeating-linear-gradient(45deg,
-		{0},
-		{0} 11.31px)
-	""".format(c1)
+def stripes(codes, alpha=0.1):
+	import math
+	colors = [color(c, alpha) for c in codes]
+	step = 22 / math.sqrt(2)
+
+	return "repeating-linear-gradient(45deg, {start_c}, {middle}{end_c} {end_pos:.2f})".format(
+		start_c=colors[0],
+		middle=''.join(
+			'{a} {pos:.2f}px, {b} {pos:.2f}px, '.format(
+				a=a, b=b, pos=i*step
+			)
+			for i, (a, b) in enumerate(zip(colors, colors[1:]), 1)
+		),
+		end_c=colors[-1],
+		end_pos=len(colors)*step
+	)
 end
 
-def striped_color(code1, code2):
-	c1 = color(code1)
-	c2 = color(code2)
-	return """repeating-linear-gradient(45deg,
-		{0},
-		{0} 11.31px,
-		{1} 11.31px,
-		{1} 22.62px)
-	""".format(c1, c2)
+def stripe_class(codes):
+	cls = 'lab-colored_'+'-'.join(codes)
+	stripe_class.data[cls] = codes
+	return cls
 end
+stripe_class.data = {}
 %>
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
@@ -136,7 +142,7 @@ end
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l.name}}&NewLine;{{l.location}}"
-										    style="background-image: {{ single_color(l.code) }}">
+										    class="{{ stripe_class([l.code]) }}">
 											<tt>{{ l.code }}</tt>
 										</td>
 									% elif len(labs[d]) == 2:
@@ -144,7 +150,7 @@ end
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
-										    style="background-image: {{ striped_color(l1.code, l2.code) }}">
+										    class="{{ stripe_class([l1.code, l2.code]) }}">
 											<tt>{{ l1.code }}<br />{{l2.code}}</tt>
 										</td>
 									% else:
@@ -208,7 +214,7 @@ end
 
 							% for lab in labs:
 								<p style="padding-left: 40px">
-									<tt class="key" style="background-color: {{color(lab.code) }}">{{ lab.code }}</tt>
+									<tt class="key" style="background-color: {{color(lab.code, 0.3) }}">{{ lab.code }}</tt>
 									{{lab.name}}<br />
 									<small class="text-muted">{{ lab.location }}</small>
 								</p>
@@ -219,6 +225,12 @@ end
 			</div>
 		</div>
 		<a href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+		<style>
+			% for cls, codes in stripe_class.data.items():
+				.{{cls}} { background-image: {{ stripes(codes) }}; }
+				.{{cls}}.active { background-image: {{ stripes(codes, 0.3) }}; }
+			% end
+		</style>
 		<script>
 		$(function() {
 			var by_group = {};
