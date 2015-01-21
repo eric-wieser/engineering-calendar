@@ -4,17 +4,26 @@
 def color(code):
 	codes = sorted(tt.course.labs.keys())
 	i = 360 * codes.index(code) // len(codes)
-	return "hsla({}, 100%, 75%, 0.5)".format(i)
+	return "hsla({}, 75%, 50%, 0.1)".format(i)
 end
 
-def striped_color(code):
-	c = color(code)
+def single_color(code1):
+	c1 = color(code1)
+	return """repeating-linear-gradient(45deg,
+		{0},
+		{0} 11.31px)
+	""".format(c1)
+end
+
+def striped_color(code1, code2):
+	c1 = color(code1)
+	c2 = color(code2)
 	return """repeating-linear-gradient(45deg,
 		{0},
 		{0} 11.31px,
-		transparent 11.31px,
-		transparent 22.62px)
-	""".format(c)
+		{1} 11.31px,
+		{1} 22.62px)
+	""".format(c1, c2)
 end
 %>
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
@@ -23,6 +32,7 @@ end
 		<link rel="icon" type="image/png" href="http://cdn.dustball.com/calendar.png">
 		<title>{{term.title()}} calendars</title>
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		<style>
 			th, td {
 				vertical-align: middle !important;
@@ -41,6 +51,9 @@ end
 			.table-condensed>*>tr>td,
 			.table-condensed>*>tr>th  {
 				padding: 2px !important;
+			}
+			td.active, th.active{
+				background-color: #f5f5f5;
 			}
 			table {
 				min-width: {{ 25 * (len(tt.dates) + 2) }}px !important;
@@ -88,7 +101,7 @@ end
 						% for gi, group in enumerate(tt.groups):
 							% labs = tt.labs_for(group)
 							<tr>
-								<th colspan="2" scope="row">
+								<th colspan="2" scope="row" data-group="{{ group }}">
 									% url = urlparts._replace(path=urlparts.path + '/{}.ics'.format(group)).geturl()
 									<a href="{{ url }}">{{group}}</a>
 								</th>
@@ -102,29 +115,36 @@ end
 
 									<%
 									# iterate over adjacent entries which match vertically
-									nrows = 1
+									this_groups = [group]
 									for g in tt.groups[gi+1:]:
 										if tt.labs_for(g)[d] == ls and ls:
-											nrows += 1
+											this_groups.append(g)
 											skip.add((g, d))
 										else:
 											break
 										end
 									end
+									nrows = len(this_groups)
 									%>
 
 									% if len(ls) == 0:
-										<td></td>
+										<td data-group="{{ group }}"></td>
 									% elif len(ls) == 1:
 										% l = ls[0];
 
 
-										<td rowspan="{{nrows}}" title="{{l.name}}&NewLine;{{l.location}}"style="background-color: {{ color(l.code) }}">
+										<td rowspan="{{nrows}}"
+										    data-group="{{ ','.join(this_groups) }}"
+										    title="{{l.name}}&NewLine;{{l.location}}"
+										    style="background-image: {{ single_color(l.code) }}">
 											<tt>{{ l.code }}</tt>
 										</td>
 									% elif len(labs[d]) == 2:
 										% l1, l2 = ls;
-										<td rowspan="{{nrows}}" title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"style="background-color: {{ color(l1.code) }}; background-image: {{ striped_color(l2.code) }}">
+										<td rowspan="{{nrows}}"
+										    data-group="{{ ','.join(this_groups) }}"
+										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
+										    style="background-image: {{ striped_color(l1.code, l2.code) }}">
 											<tt>{{ l1.code }}<br />{{l2.code}}</tt>
 										</td>
 									% else:
@@ -185,7 +205,7 @@ end
 									{{ group }}
 								% end
 							</h3>
-							
+
 							% for lab in labs:
 								<p style="padding-left: 40px">
 									<tt class="key" style="background-color: {{color(lab.code) }}">{{ lab.code }}</tt>
@@ -199,5 +219,32 @@ end
 			</div>
 		</div>
 		<a href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+		<script>
+		$(function() {
+			var by_group = {};
+			var $a = $('[data-group]');
+			$a.each(function() {
+				var $elem = $(this);
+				var dgroups = $elem.data('group').split(',');
+				$.each(dgroups, function() {
+					if(!by_group[this])
+						by_group[this] = $elem;
+					else
+						by_group[this] = by_group[this].add($elem);
+				});
+			});
+			$a.hover(function() {
+				var dgroups = $(this).data('group').split(',');
+				$.each(dgroups, function() {
+					by_group[this].addClass('active');
+				});
+			}, function() {
+				var dgroups = $(this).data('group').split(',');
+				$.each(dgroups, function() {
+					by_group[this].removeClass('active');
+				});
+			});
+		});
+		</script>
 	</body>
 </html>
