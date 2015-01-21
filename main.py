@@ -1,4 +1,4 @@
-from bottle import route, template, response, redirect, template, HTTPError, request
+from bottle import route, template, response, redirect, template, HTTPError, request, view
 import bottle
 import icalendar
 
@@ -40,8 +40,9 @@ class ICalPlugin(object):
 bottle.install(ICalPlugin())
 
 @route('/')
+@view('index')
 def index():
-	redirect('https://github.com/eric-wieser/engineering-calendar/blob/master/README.md')
+	pass
 
 @route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>')
 def ia_term_table(part, term):
