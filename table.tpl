@@ -130,6 +130,13 @@ stripe_class.data = {}
 										% continue
 									% end
 									% ls = labs[d]
+									% for l in ls:
+										% try:
+											% l.times_on(d)
+										% except e:
+											% raise ValueError(e, l)
+										% end
+									% end
 
 									% seen_labs |= set(ls)
 
