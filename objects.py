@@ -3,6 +3,10 @@ from datetime import datetime, time
 
 import xlrd
 
+def _strify(c):
+	if isinstance(c, float):
+		return str(int(c))
+	return str(c)
 
 class Slot(object):
 	def __init__(self, name, times=None):
@@ -12,7 +16,10 @@ class Slot(object):
 	def on(self, date):
 		day = '{:%a}'.format(date)  # 3-letter day names (Mon, Tue, etc)
 
-		start, end = self.times.get(day) or self.times['']
+		try:
+			start, end = self.times.get(day) or self.times['']
+		except KeyError:
+			raise ValueError("No times for {} associated with {}, and no default found".format(day, self.name))
 
 		return datetime.combine(date, start), datetime.combine(date, end)
 
@@ -21,16 +28,19 @@ class Slot(object):
 
 
 class Lab(object):
-	def __init__(self, code, group, name, location, slot):
+	def __init__(self, code, group, name, location, slots):
 		self.group = group
 		self.code = code
 		self.name = name
 		self.location = location
-		self.slot = slot
+		self.slots = slots
 
 	def __repr__(self):
-		return "Lab({s.code!r}, {s.group!r}, {s.name!r}, {s.location!r}, slot={sl})".format(
-			s=self, sl='slots[{s.slot.name!r}]'.format(s=self) if self.slot else repr(None))
+		return "Lab({s.code!r}, {s.group!r}, {s.name!r}, {s.location!r}, slot=<{sl}>)".format(
+			s=self, sl=', '.join(s.name for s in self.slots))
+
+	def times_on(self, day):
+		return [slot.on(day) for slot in self.slots]
 
 
 class Timetable(object):
@@ -84,22 +94,24 @@ class CourseYear(object):
 
 		labs = {}
 		for i in range(1, sh.nrows):
-			group, code, name, location, slot = [c.value for c in sh.row(i)[:5]]
+			group, code, name, location, slots = [c.value for c in sh.row(i)[:5]]
+			code = _strify(code)
 
 			if group:
 				current_group = group
 				continue
 
-			if slot:
-				slot = self.slots[slot]
+			if slots:
+				slots = [self.slots[slot] for slot in slots.split(',')]
 			else:
-				slot = None
+				slots = []
 
 			if code in labs:
 				raise ValueError("Lab code {} refers to both {} and {}".format(code, labs[code].name, name))
 
-			labs[code] = Lab(code, current_group, name, location, slot)
+			labs[code] = Lab(code, current_group, name, location, slots)
 
+		print labs
 		return labs
 
 	def term(self, name='lent'):
@@ -132,7 +144,8 @@ class CourseYear(object):
 
 				# build and check the new date
 				date = start_month.replace(day=date_no)
-				assert '{:%a}'.format(date).startswith(day_name)
+				if not '{:%a}'.format(date).startswith(day_name):
+					raise ValueError("Day in column {}, {:%a %d %b} is not a {!r}".format(i, date, day_name))
 				yield date.date()
 
 				last_date_no = date_no
@@ -164,8 +177,8 @@ class CourseYear(object):
 		def get_code(r, c):
 			for merge_r, merge_c, code in merges:
 				if r in merge_r and c in merge_c:
-					return code
-			return sh.cell_value(r, c)
+					return _strify(code)
+			return _strify(sh.cell_value(r, c))
 
 		# convert timetable to lab objects
 		for group, r in zip(groups, row_area):

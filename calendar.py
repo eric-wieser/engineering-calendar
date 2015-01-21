@@ -27,8 +27,6 @@ def construct(part, term, lab_group):
 	return cal
 
 def events_for_term(part, term, lab_group):
-	assert part == 'ib'
-
 	timetable = CourseYear('{}.xls'.format(part)).term(term)
 
 	events = []
@@ -36,34 +34,34 @@ def events_for_term(part, term, lab_group):
 	# add the labs
 	for day, labs in timetable.labs_for(lab_group).items():
 		for lab in labs:
-			if not lab.slot:
+			if not lab.slots:
 				continue
-			startt, endt = lab.slot.on(day)
+			for i, (startt, endt) in enumerate(lab.times_on(day)):
+				events.append(icalendar.Event(
+					summary=icalendar.vText(
+						'{}: {}'.format(lab.code, lab.name)
+						if any(c.isdigit() for c in lab.code) else
+						lab.name
+					),
+					location=icalendar.vText(
+						"{} - {}".format(lab.location, cued_address)
+						if lab.location else
+						cued_address
+					),
+					dtstart=icalendar.vDatetime(timezone.localize(startt).astimezone(pytz.utc)),
+					dtend=  icalendar.vDatetime(timezone.localize(endt).astimezone(pytz.utc)),
+					dtstamp=icalendar.vDatetime(last_updated),
 
-			events.append(icalendar.Event(
-				summary=icalendar.vText(
-					'{}: {}'.format(lab.code, lab.name)
-					if any(c.isdigit() for c in lab.code) else
-					lab.name
-				),
-				location=icalendar.vText(
-					"{} - {}".format(lab.location, cued_address)
-					if lab.location else
-					cued_address
-				),
-				dtstart=icalendar.vDatetime(timezone.localize(startt).astimezone(pytz.utc)),
-				dtend=  icalendar.vDatetime(timezone.localize(endt).astimezone(pytz.utc)),
-				dtstamp=icalendar.vDatetime(last_updated),
+					uid='{code}-{i}.d{day}.{term}.{part}@efw27.user.srcf.net'.format(
+						i=i,
+						code=lab.code,
+						day=(day - timetable.dates[0]).days,
+						term=term,
+						part=part
+					),
 
-				uid='{code}.d{day}.{term}.{part}@efw27.user.srcf.net'.format(
-					code=lab.code,
-					day=(day - timetable.dates[0]).days,
-					term=term,
-					part=part
-				),
-
-				description=icalendar.vText('Feedback: http://www-g.eng.cam.ac.uk/ssjc/labs.html')
-			))
+					description=icalendar.vText('Feedback: http://www-g.eng.cam.ac.uk/ssjc/labs.html')
+				))
 
 	return events
 

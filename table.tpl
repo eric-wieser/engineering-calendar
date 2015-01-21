@@ -148,7 +148,13 @@ stripe_class.data = {}
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
 										    class="{{ stripe_class([l1.code, l2.code]) }}">
-											<tt>{{ l1.code }}<br />{{l2.code}}</tt>
+											<tt>
+												% if nrows > 1:
+													{{ l1.code }}<br />{{l2.code}}
+												% else:
+													{{ l1.code }}&middot;{{l2.code}}
+												% end
+											</tt>
 										</td>
 									% else:
 										<td rowspan="{{nrows}}" class="small">
