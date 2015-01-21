@@ -111,7 +111,6 @@ class CourseYear(object):
 
 			labs[code] = Lab(code, current_group, name, location, slots)
 
-		print labs
 		return labs
 
 	def term(self, name='lent'):
