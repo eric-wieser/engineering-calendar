@@ -12,16 +12,13 @@ def stripes(codes, alpha=0.1):
 	colors = [color(c, alpha) for c in codes]
 	step = 22 / math.sqrt(2)
 
-	return "repeating-linear-gradient(45deg, {start_c}, {middle}{end_c} {end_pos:.2f})".format(
-		start_c=colors[0],
-		middle=''.join(
-			'{a} {pos:.2f}px, {b} {pos:.2f}px, '.format(
-				a=a, b=b, pos=i*step
+	return "repeating-linear-gradient(45deg, {stops})".format(
+		stops=', '.join(
+			'{c} {pos1:.2f}px, {c} {pos2:.2f}px'.format(
+				c=c, pos1=i*step, pos2=(i + 1)*step
 			)
-			for i, (a, b) in enumerate(zip(colors, colors[1:]), 1)
-		),
-		end_c=colors[-1],
-		end_pos=len(colors)*step
+			for i, c in enumerate(colors)
+		)
 	)
 end
 
