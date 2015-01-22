@@ -28,12 +28,13 @@ class Slot(object):
 
 
 class Lab(object):
-	def __init__(self, code, group, name, location, slots):
+	def __init__(self, code, group, name, location, slots, link):
 		self.group = group
 		self.code = code
 		self.name = name
 		self.location = location
 		self.slots = slots
+		self.link = link
 
 	def __repr__(self):
 		return "Lab({s.code!r}, {s.group!r}, {s.name!r}, {s.location!r}, slot=<{sl}>)".format(
@@ -87,14 +88,14 @@ class CourseYear(object):
 		sh = self._wb.sheet_by_name('labs')
 		headers = [c.value for c in sh.row(0)]
 
-		assert headers == ['Group', 'Code', 'Name', 'Location', 'Slot']
+		assert headers[:6] == ['Group', 'Code', 'Name', 'Location', 'Slot', 'Link']
 
 		current_group = None
 
 
 		labs = {}
 		for i in range(1, sh.nrows):
-			group, code, name, location, slots = [c.value for c in sh.row(i)[:5]]
+			group, code, name, location, slots, link = [c.value for c in sh.row(i)[:6]]
 			code = _strify(code)
 
 			if group:
@@ -109,7 +110,7 @@ class CourseYear(object):
 			if code in labs:
 				raise ValueError("Lab code {} refers to both {} and {}".format(code, labs[code].name, name))
 
-			labs[code] = Lab(code, current_group, name, location, slots)
+			labs[code] = Lab(code, current_group, name, location, slots, link)
 
 		return labs
 

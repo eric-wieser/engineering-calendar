@@ -268,7 +268,12 @@ stripe_class.data = {}
 							% for lab in labs:
 								<p style="padding-left: 40px">
 									<tt class="key" style="background-color: {{color(lab.code, 0.3) }}">{{ lab.code }}</tt>
-									{{lab.name}}<br />
+									% if lab.link:
+										<a target="_blank" href="{{ lab.link }}">{{ lab.name }}</a>
+									% else:
+										{{lab.name}}
+									% end
+									<br />
 									<small class="text-muted">{{ lab.location }}</small>
 								</p>
 							% end
