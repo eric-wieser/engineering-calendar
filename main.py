@@ -49,6 +49,9 @@ def ia_term_table(part, term):
 	timetable = CourseYear('{}.xls'.format(part)).term(term)
 	return template('table', part=part, term=term, tt=timetable)
 
+@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/examples.ics')
+def ia_term_calendar(part, term):
+	return calendar.construct(part, term, examples=True)
 
 
 @route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')

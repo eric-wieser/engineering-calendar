@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from datetime import datetime, time
+import re
 
 import xlrd
 
@@ -7,6 +8,11 @@ def _strify(c):
 	if isinstance(c, float):
 		return str(int(c))
 	return str(c)
+
+
+def _dateify(value, wb):
+	return datetime(*xlrd.xldate_as_tuple(value, wb.datemode))
+
 
 class Slot(object):
 	def __init__(self, name, times=None):
@@ -53,6 +59,21 @@ class Timetable(object):
 
 	def labs_for(self, lab_code):
 		return self.table[lab_code]
+
+
+class ExamplePaper(object):
+	def __init__(self, name, sheet_no, paper_no, issue_date, class_date, class_location, class_lecturer):
+		self.name = name
+		self.sheet_no = sheet_no
+		self.paper_no = paper_no
+
+		self.issue_date = issue_date
+
+		# TODO: remove hard-coded times
+		self.class_start = datetime.combine(class_date, time(hour=11))
+		self.class_end = datetime.combine(class_date, time(hour=12))
+		self.class_location = class_location
+		self.class_lecturer = class_lecturer
 
 
 class CourseYear(object):
@@ -114,6 +135,45 @@ class CourseYear(object):
 
 		return labs
 
+	def examples(self, name='lent'):
+		try:
+			sh = self._wb.sheet_by_name('examples-{}'.format(name))
+		except xlrd.XLRDError as e:
+			raise LookupError("No data for example papers in term {!r}".format(name))
+
+		issue_date = None
+
+		for i in xrange(1, sh.nrows):
+			week, n_issue_date, title, sheet_no, class_date, class_lecturer, class_location = [c.value for c in sh.row(i)[:7]]
+
+			if n_issue_date:
+				try:
+					issue_date = _dateify(n_issue_date, self._wb)
+				except ValueError:
+					issue_date = None
+
+			class_date = _dateify(class_date, self._wb)
+			sheet_no = int(sheet_no)
+
+			paper_no, name = re.match(r'^P(\d): (.*)$', title).groups()
+			paper_no = int(paper_no)
+
+			yield ExamplePaper(
+				name=name,
+				sheet_no=sheet_no,
+				paper_no=paper_no,
+
+				issue_date=issue_date,
+
+				class_date=class_date,
+				class_location=class_location,
+				class_lecturer=class_lecturer
+			)
+
+
+
+
+
 	def term(self, name='lent'):
 		try:
 			sh = self._wb.sheet_by_name(name)
@@ -126,8 +186,7 @@ class CourseYear(object):
 		def get_dates():
 			# read start month
 			assert sh.cell_value(0, 0) == 'Start month', "A1 should contain 'Start month:'"
-			start_month = sh.cell_value(0, 1)
-			start_month = datetime(*xlrd.xldate_as_tuple(start_month, self._wb.datemode))
+			start_month = _dateify(sh.cell_value(0, 1), self._wb)
 
 			# parse column headers, check dates
 			last_date_no = 0

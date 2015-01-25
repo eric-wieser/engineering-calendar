@@ -1,4 +1,5 @@
 from datetime import datetime
+import itertools
 
 import icalendar
 import pytz
@@ -11,22 +12,91 @@ cued_address = 'Cambridge University Engineering Department, Cambridge, United K
 from objects import CourseYear
 
 
-def construct(part, term, lab_group):
-	labs = events_for_term(part, term, lab_group)
+def construct(part, term, lab_group=None, examples=False):
+	if lab_group:
+		evts = labs_for_term(part, term, lab_group)
+		name = 'CUED {part} {term} lab timetable - Groups {groups}'.format(
+			part=part.upper(),
+			term=term.title(),
+			groups=lab_group
+		)
+	elif examples:
+		evts = examples_for_term(part, term)
+		name = 'CUED {part} {term} example class timetable'.format(
+			part=part.upper(),
+			term=term.title()
+		)
+	else:
+		raise TypeError('Invalid arguments')
 
 	cal = icalendar.Calendar()
-	cal['X-WR-CALNAME'] = 'CUED {part} {term} lab timetable - Groups {groups}'.format(
-		part=part.upper(),
-		term=term.title(),
-		groups=lab_group
-	)
+	cal['X-WR-CALNAME'] = name
 	cal['VERSION'] = '2.0'
-	cal['PRODID'] = '-//ericwieser.me//CUED lab calendars//EN'
-	cal.subcomponents += labs
+	cal['PRODID'] = '-//ericwieser.me//CUED calendars//EN'
+	cal.subcomponents += evts
 
 	return cal
 
-def events_for_term(part, term, lab_group):
+def examples_for_term(part, term):
+	examples = list(CourseYear('{}.xls'.format(part)).examples(term))
+
+	events = []
+
+	for example in examples:
+		events.append(icalendar.Event(
+			summary='P{0.paper_no}: {0.name} - Example paper {0.sheet_no}'.format(example),
+			dtstart=icalendar.vDatetime(timezone.localize(example.class_start).astimezone(pytz.utc)),
+			dtend=icalendar.vDatetime(timezone.localize(example.class_end).astimezone(pytz.utc)),
+			dtstamp=icalendar.vDatetime(last_updated),
+
+			location=icalendar.vText(
+				"{} - {}".format(example.class_location, cued_address)
+				if example.class_location else
+				cued_address
+			),
+
+			uid='{0.paper_no}-{0.sheet_no}.{term}.{part}@efw27.user.srcf.net'.format(
+				example,
+				term=term,
+				part=part
+			),
+
+			description=icalendar.vText('Lecturer: {.class_lecturer}'.format(example))
+		))
+
+	# group and order by issue date, ignoring those issued the previous term
+	issue_key = lambda e: e.issue_date
+	examples = filter(issue_key, examples)
+	examples = sorted(examples, key=issue_key)
+	examples = itertools.groupby(examples, issue_key)
+
+	for i, (issue_date, papers) in enumerate(examples):
+		# consume the iterable so that we can len() it
+		papers = list(papers)
+		events.append(icalendar.Event(
+			summary='Collect {} example paper{}'.format(len(papers), '' if len(papers) == 1 else 's'),
+			dtstart=icalendar.vDate(timezone.localize(issue_date).astimezone(pytz.utc)),
+			dtend=icalendar.vDate(timezone.localize(issue_date).astimezone(pytz.utc)),
+			dtstamp=icalendar.vDatetime(last_updated),
+
+			location=icalendar.vText(cued_address),
+
+			uid='collection-{i}.{term}.{part}@efw27.user.srcf.net'.format(
+				i=i,
+				term=term,
+				part=part
+			),
+
+			description=icalendar.vText('\n'.join(
+				'P{0.paper_no}: {0.name} - Example paper {0.sheet_no}'.format(p)
+				for p in papers
+			))
+		))
+
+	return events
+
+
+def labs_for_term(part, term, lab_group):
 	timetable = CourseYear('{}.xls'.format(part)).term(term)
 
 	events = []
@@ -60,7 +130,11 @@ def events_for_term(part, term, lab_group):
 						part=part
 					),
 
-					description=icalendar.vText('Feedback: http://www-g.eng.cam.ac.uk/ssjc/labs.html')
+					description=icalendar.vText(
+						'{}Feedback: http://www-g.eng.cam.ac.uk/ssjc/labs.html'.format(
+							"Information: {}\n\n".format(lab.link) if lab.link else ""
+						)
+					)
 				))
 
 	return events
