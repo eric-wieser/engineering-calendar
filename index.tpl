@@ -15,6 +15,7 @@
 				<div class="col-md-6">
 					<h2>Part IA</h2>
 					<a class="btn btn-default btn-lg btn-block" href='{{ request.urlparts._replace(path=request.urlparts.path + 'ia/lent').geturl() }}'>Lent labs</a>
+					<a class="btn btn-default btn-lg btn-block" href='{{ request.urlparts._replace(path=request.urlparts.path + 'ia/easter').geturl() }}'>Easter labs</a>
 				</div>
 				<div class="col-md-6">
 					<h2>Part IB</h2>
