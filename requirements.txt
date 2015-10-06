@@ -1,0 +1,4 @@
+icalendar==3.9.1
+xlrd==0.9.4
+bottle==0.12.8
+pytz

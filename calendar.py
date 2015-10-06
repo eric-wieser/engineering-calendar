@@ -140,4 +140,4 @@ def labs_for_term(part, term, lab_group):
 	return events
 
 if __name__ == '__main__':
-	print events_for_term('ib', 'lent', '142-144')
+	print(events_for_term('ib', 'lent', '142-144'))

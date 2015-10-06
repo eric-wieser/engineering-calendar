@@ -143,7 +143,7 @@ class CourseYear(object):
 
 		issue_date = None
 
-		for i in xrange(1, sh.nrows):
+		for i in range(1, sh.nrows):
 			week, n_issue_date, title, sheet_no, class_date, class_lecturer, class_location = [c.value for c in sh.row(i)[:7]]
 
 			if n_issue_date:
@@ -180,8 +180,8 @@ class CourseYear(object):
 		except xlrd.XLRDError as e:
 			raise LookupError("No data for term {!r}".format(name))
 
-		col_area = xrange(1, sh.ncols)
-		row_area = xrange(4, sh.nrows)
+		col_area = range(1, sh.ncols)
+		row_area = range(4, sh.nrows)
 
 		def get_dates():
 			# read start month
@@ -222,8 +222,8 @@ class CourseYear(object):
 				elif clo not in col_area or chi-1 not in col_area:
 					raise ValueError('Merged cell overflows range vertically')
 				else:
-					rrange = xrange(rlo, rhi)
-					crange = xrange(clo, chi)
+					rrange = range(rlo, rhi)
+					crange = range(clo, chi)
 
 					yield rrange, crange, sh.cell_value(rlo, clo)
 

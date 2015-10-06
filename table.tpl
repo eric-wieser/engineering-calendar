@@ -250,7 +250,7 @@ stripe_class.data = {}
 				labs = sorted(seen_labs, key=lambda l: (l.group, l.code))
 
 				grouped = [(group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
-				grouped = sorted(grouped, key=lambda (g, l): len(l), reverse=True)
+				grouped = sorted(grouped, key=lambda i: len(i[1]), reverse=True)
 				%>
 				<div class="row">
 					% for group, labs in grouped:
