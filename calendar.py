@@ -12,9 +12,9 @@ cued_address = 'Cambridge University Engineering Department, Cambridge, United K
 from objects import CourseYear
 
 
-def construct(part, term, lab_group=None, examples=False):
+def construct(year, part, term, lab_group=None, examples=False):
 	if lab_group:
-		evts = labs_for_term(part, term, lab_group)
+		evts = labs_for_term(year, part, term, lab_group)
 		name = 'CUED {part} {term} lab timetable - Groups {groups}'.format(
 			part=part.upper(),
 			term=term.title(),
@@ -37,8 +37,8 @@ def construct(part, term, lab_group=None, examples=False):
 
 	return cal
 
-def examples_for_term(part, term):
-	examples = list(CourseYear('{}.xls'.format(part)).examples(term))
+def examples_for_term(year, part, term):
+	examples = list(CourseYear('{}-{}.xls'.format(part, year)).examples(term))
 
 	events = []
 
@@ -96,8 +96,8 @@ def examples_for_term(part, term):
 	return events
 
 
-def labs_for_term(part, term, lab_group):
-	timetable = CourseYear('{}.xls'.format(part)).term(term)
+def labs_for_term(year, part, term, lab_group):
+	timetable = CourseYear('{}-{}.xls'.format(part, year)).term(term)
 
 	events = []
 

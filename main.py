@@ -44,19 +44,19 @@ bottle.install(ICalPlugin())
 def index():
 	pass
 
-@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>')
-def ia_term_table(part, term):
-	timetable = CourseYear('{}.xls'.format(part)).term(term)
+@route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>')
+def ia_term_table(year, part, term):
+	timetable = CourseYear('{}-{}.xls'.format(part, year)).term(term)
 	return template('table', part=part, term=term, tt=timetable)
 
-@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/examples.ics')
-def ia_term_calendar(part, term):
-	return calendar.construct(part, term, examples=True)
+@route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>/examples.ics')
+def ia_term_calendar(year, part, term):
+	return calendar.construct(year, part, term, examples=True)
 
 
-@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')
-def ia_term_calendar(part, term, group):
-	return calendar.construct(part, term, group)
+@route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')
+def ia_term_calendar(year, part, term, group):
+	return calendar.construct(year, part, term, group)
 
 app = bottle.default_app()
 root = bottle.Bottle()
