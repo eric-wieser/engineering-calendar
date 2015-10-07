@@ -1,4 +1,5 @@
 % from bottle import request
+% from objects import NoTermData
 
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
@@ -23,7 +24,9 @@
 											href='{{ request.urlparts._replace(path=request.urlparts.path + '{}/{}/{}'.format(c.year, c.part, tid)).geturl() }}'>
 										{{ tname.title() }} labs
 									</a>
-								% except LookupError: pass
+								% except NoTermData: pass
+								% except Exception as e:
+									<div class="alert alert-danger"><strong>Failed to load {{ tname.title() }} labs</strong> - {{ repr(e) }}</div>
 								% end
 
 								% try:
@@ -32,7 +35,7 @@
 											href='{{ request.urlparts._replace(scheme='webcal', path=request.urlparts.path + '{}/{}/{}/examples.ics'.format(c.year, c.part, tid)).geturl() }}'>
 										{{ tname.title() }} example rota
 									</a>
-								% except LookupError: pass
+								% except NoTermData: pass
 								% end
 							% end
 						</div>

@@ -75,6 +75,7 @@ class ExamplePaper(object):
 		self.class_location = class_location
 		self.class_lecturer = class_lecturer
 
+class NoTermData(LookupError): pass
 
 class CourseYear(object):
 	def __init__(self, part, year, xls_fname):
@@ -154,7 +155,7 @@ class CourseYear(object):
 		try:
 			sh = self._wb.sheet_by_name('examples-{}'.format(name))
 		except xlrd.XLRDError as e:
-			raise LookupError("No data for example papers in term {!r}".format(name))
+			raise NoTermData("No data for example papers in term {!r}".format(name))
 
 		issue_date = None
 
@@ -196,7 +197,7 @@ class CourseYear(object):
 		try:
 			sh = self._wb.sheet_by_name(name)
 		except xlrd.XLRDError as e:
-			raise LookupError("No data for term {!r}".format(name))
+			raise NoTermData("No data for term {!r}".format(name))
 
 		col_area = range(1, sh.ncols)
 		row_area = range(4, sh.nrows)
