@@ -155,7 +155,7 @@ class CourseYear(object):
 		try:
 			sh = self._wb.sheet_by_name('examples-{}'.format(name))
 		except xlrd.XLRDError as e:
-			raise NoTermData("No data for example papers in term {!r}".format(name))
+			raise NoTermData("No data for example papers in term {!r}".format(name)) from e
 
 		issue_date = None
 
@@ -197,7 +197,7 @@ class CourseYear(object):
 		try:
 			sh = self._wb.sheet_by_name(name)
 		except xlrd.XLRDError as e:
-			raise NoTermData("No data for term {!r}".format(name))
+			raise NoTermData("No data for term {!r}".format(name)) from e
 
 		col_area = range(1, sh.ncols)
 		row_area = range(4, sh.nrows)
