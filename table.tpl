@@ -120,7 +120,7 @@ stripe_class.data = {}
 						<tr>
 							<th colspan="2"></th>
 							% for d in tt.dates:
-								<th>{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
+								<th title="{{d.isoformat()}}"">{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
 							% end
 						</tr>
 					</thead>
