@@ -87,6 +87,15 @@ class CourseYear(object):
 		self._timetable = {}
 
 	@classmethod
+	def iter(cls):
+		import os
+		for fname in os.listdir():
+			m = re.match(r'(\w+)-(\d+).xls', fname)
+			if m:
+				yield cls.get(m.group(1), int(m.group(2)))
+
+
+	@classmethod
 	def get(cls, part, year):
 		return cls(part, year, '{}-{}.xls'.format(part, year))
 
