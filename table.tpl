@@ -120,7 +120,7 @@ stripe_class.data = {}
 						<tr>
 							<th colspan="2"></th>
 							% for d in tt.dates:
-								<th title="{{d.isoformat()}}"">{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
+								<th title="{{d.isoformat()}}">{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
 							% end
 						</tr>
 					</thead>
@@ -132,7 +132,7 @@ stripe_class.data = {}
 							<tr>
 								<th colspan="2" scope="row" data-group="{{ group }}">
 									% url = urlparts._replace(path=urlparts.path + '/{}.ics'.format(group)).geturl()
-									<a href="{{ url }}">{{group}}</a>
+									<a href="{{ url }}" style="white-space: nowrap;">{{group}}</a>
 								</th>
 								% for d in tt.dates:
 									% if (group, d) in skip:
