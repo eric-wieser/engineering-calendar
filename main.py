@@ -62,10 +62,19 @@ def ia_term_calendar(year, part, term):
 	return calendarmaker.construct(timetable, term, examples=True)
 
 
-@route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')
+@route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics', name='calfile')
 def ia_term_calendar(year, part, term, group):
 	course_year = CourseYear.get(part, year)
 	return calendarmaker.construct(course_year, term, group)
+
+# legacy urls:
+@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/examples.ics')
+def ia_term_calendar(part, term):
+	redirect(app.get_url('calfile', year=2014, part=part, term=term), code=301)
+
+@route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')
+def ia_term_calendar(part, term, group):
+	redirect(app.get_url('calfile', year=2014, part=part, term=term, group=group), code=301)
 
 
 app = bottle.default_app()
