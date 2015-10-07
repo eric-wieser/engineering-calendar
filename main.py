@@ -2,7 +2,7 @@ from bottle import route, template, response, redirect, template, HTTPError, req
 import bottle
 import icalendar
 
-import calendar
+import calendarmaker
 from objects import CourseYear
 
 class ICalPlugin(object):
