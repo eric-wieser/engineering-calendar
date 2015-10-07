@@ -65,7 +65,8 @@ def ia_term_calendar(year, part, term):
 @route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')
 def ia_term_calendar(year, part, term, group):
 	course_year = CourseYear.get(part, year)
-	return calendarmaker.construct(course_year, part, term, group)
+	return calendarmaker.construct(course_year, term, group)
+
 
 app = bottle.default_app()
 root = bottle.Bottle()
