@@ -149,32 +149,35 @@ class CourseYear(object):
 
 		issue_date = None
 
-		for i in range(1, sh.nrows):
-			week, n_issue_date, title, sheet_no, class_date, class_lecturer, class_location = [c.value for c in sh.row(i)[:7]]
+		def gen():
+			for i in range(1, sh.nrows):
+				week, n_issue_date, title, sheet_no, class_date, class_lecturer, class_location = [c.value for c in sh.row(i)[:7]]
 
-			if n_issue_date:
-				try:
-					issue_date = _dateify(n_issue_date, self._wb)
-				except ValueError:
-					issue_date = None
+				if n_issue_date:
+					try:
+						issue_date = _dateify(n_issue_date, self._wb)
+					except ValueError:
+						issue_date = None
 
-			class_date = _dateify(class_date, self._wb)
-			sheet_no = int(sheet_no)
+				class_date = _dateify(class_date, self._wb)
+				sheet_no = int(sheet_no)
 
-			paper_no, name = re.match(r'^P(\d): (.*)$', title).groups()
-			paper_no = int(paper_no)
+				paper_no, name = re.match(r'^P(\d): (.*)$', title).groups()
+				paper_no = int(paper_no)
 
-			yield ExamplePaper(
-				name=name,
-				sheet_no=sheet_no,
-				paper_no=paper_no,
+				yield ExamplePaper(
+					name=name,
+					sheet_no=sheet_no,
+					paper_no=paper_no,
 
-				issue_date=issue_date,
+					issue_date=issue_date,
 
-				class_date=class_date,
-				class_location=class_location,
-				class_lecturer=class_lecturer
-			)
+					class_date=class_date,
+					class_location=class_location,
+					class_lecturer=class_lecturer
+				)
+
+		return gen()
 
 
 
