@@ -1,8 +1,14 @@
 % from bottle import request
 % import re
 <%
+def natural_key(x):
+	x = re.split(r'(\d+)', x)
+	x[1::2] = map(int, x[1::2])
+	return x
+end
+
 def color(code, alpha=0.1):
-	codes = sorted(tt.course.labs.keys())
+	codes = sorted(tt.course.labs.keys(), key=natural_key)
 	i = 360 * codes.index(code) // len(codes)
 	return "hsla({}, 100%, 50%, {})".format(i, alpha)
 end
@@ -247,7 +253,7 @@ stripe_class.data = {}
 				<h2>Key</h2>
 				<%
 				import itertools
-				labs = sorted(seen_labs, key=lambda l: (l.group, l.code))
+				labs = sorted(seen_labs, key=lambda l: (l.group, natural_key(l.code)))
 
 				grouped = [(group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
 				grouped = sorted(grouped, key=lambda i: len(i[1]), reverse=True)
