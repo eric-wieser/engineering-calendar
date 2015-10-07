@@ -77,12 +77,18 @@ class ExamplePaper(object):
 
 
 class CourseYear(object):
-	def __init__(self, xls_fname):
+	def __init__(self, part, year, xls_fname):
+		self.part = part
+		self.year = year
 		self._wb = xlrd.open_workbook(xls_fname, formatting_info=True)
 		self.slots = self._get_slots()
 		self.labs = self._get_labs()
 
 		self._timetable = {}
+
+	@classmethod
+	def get(cls, part, year):
+		return cls(part, year, '{}-{}.xls'.format(part, year))
 
 	def _get_slots(self):
 		sh = self._wb.sheet_by_name('slots')

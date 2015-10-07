@@ -9,19 +9,16 @@ timezone = pytz.timezone("Europe/London")
 
 cued_address = 'Cambridge University Engineering Department, Cambridge, United Kingdom'
 
-from objects import CourseYear
-
-
-def construct(year, part, term, lab_group=None, examples=False):
+def construct(course_year, term, lab_group=None, examples=False):
 	if lab_group:
-		evts = labs_for_term(year, part, term, lab_group)
+		evts = labs_for_term(course_year, term, lab_group)
 		name = 'CUED {part} {term} lab timetable - Groups {groups}'.format(
-			part=part.upper(),
+			part=course_year.part.upper(),
 			term=term.title(),
 			groups=lab_group
 		)
 	elif examples:
-		evts = examples_for_term(part, term)
+		evts = examples_for_term(course_year, term)
 		name = 'CUED {part} {term} example class timetable'.format(
 			part=part.upper(),
 			term=term.title()
@@ -37,8 +34,8 @@ def construct(year, part, term, lab_group=None, examples=False):
 
 	return cal
 
-def examples_for_term(year, part, term):
-	examples = list(CourseYear('{}-{}.xls'.format(part, year)).examples(term))
+def examples_for_term(course_year, term):
+	examples = list(course_year.examples(term))
 
 	events = []
 
@@ -58,7 +55,7 @@ def examples_for_term(year, part, term):
 			uid='{0.paper_no}-{0.sheet_no}.{term}.{part}@efw27.user.srcf.net'.format(
 				example,
 				term=term,
-				part=part
+				part=course_year.part
 			),
 
 			description=icalendar.vText('Lecturer: {.class_lecturer}'.format(example))
@@ -84,7 +81,7 @@ def examples_for_term(year, part, term):
 			uid='collection-{i}.{term}.{part}@efw27.user.srcf.net'.format(
 				i=i,
 				term=term,
-				part=part
+				part=course_year.part
 			),
 
 			description=icalendar.vText('\n'.join(
@@ -96,8 +93,8 @@ def examples_for_term(year, part, term):
 	return events
 
 
-def labs_for_term(year, part, term, lab_group):
-	timetable = CourseYear('{}-{}.xls'.format(part, year)).term(term)
+def labs_for_term(course_year, term, lab_group):
+	timetable = course_year.term(term)
 
 	events = []
 
@@ -127,7 +124,7 @@ def labs_for_term(year, part, term, lab_group):
 						code=lab.code,
 						day=(day - timetable.dates[0]).days,
 						term=term,
-						part=part
+						part=course_year.part
 					),
 
 					description=icalendar.vText(
@@ -140,4 +137,5 @@ def labs_for_term(year, part, term, lab_group):
 	return events
 
 if __name__ == '__main__':
-	print(events_for_term('ib', 'lent', '142-144'))
+	from objects import CourseYear
+	print(construct(CourseYear.get('ib', 2014), 'lent', '142-144').to_ical())

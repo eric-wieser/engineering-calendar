@@ -42,21 +42,30 @@ bottle.install(ICalPlugin())
 @route('/')
 @view('index')
 def index():
-	pass
+	import itertools
+	key = lambda c: c.year
+
+	parts = sorted(CourseYear.iter(), key=key, reverse=True)
+	parts_by_year = itertools.groupby(parts, key)
+
+	return dict(parts=parts_by_year)
 
 @route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>')
+@view('table')
 def ia_term_table(year, part, term):
-	timetable = CourseYear('{}-{}.xls'.format(part, year)).term(term)
-	return template('table', part=part, term=term, tt=timetable)
+	timetable = CourseYear.get(part, year).term(term)
+	return dict(part=part, term=term, tt=timetable)
 
 @route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>/examples.ics')
 def ia_term_calendar(year, part, term):
-	return calendar.construct(year, part, term, examples=True)
+	course_year = CourseYear.get(part, year)
+	return calendarmaker.construct(timetable, term, examples=True)
 
 
 @route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>/<group:re:\d+-\d+>.ics')
 def ia_term_calendar(year, part, term, group):
-	return calendar.construct(year, part, term, group)
+	course_year = CourseYear.get(part, year)
+	return calendarmaker.construct(course_year, part, term, group)
 
 app = bottle.default_app()
 root = bottle.Bottle()
