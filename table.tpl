@@ -323,4 +323,4 @@ stripe_class.data = {}
 		});
 		</script>
 	</body>
-</html>
+</html
