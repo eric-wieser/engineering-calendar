@@ -5,6 +5,8 @@ import icalendar
 import calendarmaker
 from objects import CourseYear
 
+import os
+
 class ICalPlugin(object):
 	name = 'ical'
 	api  = 2
@@ -81,5 +83,10 @@ app = bottle.default_app()
 root = bottle.Bottle()
 root.mount('/cued-labs', app)
 
+port=int(os.environ.get('PORT', 8090))
+
+host=os.environ.get('HOST', 'localhost')
+
+
 if __name__ == '__main__':
-	bottle.run(root, host='localhost', port=8090, debug=True)
+	bottle.run(root, host=host, port=port, debug=True)
