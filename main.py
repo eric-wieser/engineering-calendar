@@ -78,36 +78,12 @@ def ia_term_calendar(part, term):
 def ia_term_calendar(part, term, group):
 	redirect(app.get_url('calfile', year=2014, part=part, term=term, group=group), code=301)
 
-def remaining_filter(config):
-	def to_python(match):
-		return match;
-	def to_url(match):
-		return match;
-	return r'.*', to_python, to_url
-
 app = bottle.default_app()
 root = bottle.Bottle()
 root.mount('/cued-labs', app)
 
-app.router.add_filter('remaining',remaining_filter)
-
-
-
-@route('/cued-labs')
-def myredir1():
-	redirect("/")
-
-
-
-@route('/cued-labs/<rem:remaining>')
-def myredir(rem):
-	redirect("/"+rem)
-
-
 port=int(os.environ.get('PORT', 8090))
-
 host=os.environ.get('HOST', 'localhost')
-
 
 if __name__ == '__main__':
 	bottle.run(root, host=host, port=port, debug=True)
