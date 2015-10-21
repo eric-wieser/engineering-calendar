@@ -22,8 +22,7 @@ def stripes(codes, alpha=0.1):
 		stops=', '.join(
 			'{c} {pos1:.2f}px, {c} {pos2:.2f}px'.format(
 				c=c, pos1=i*step, pos2=(i + 1)*step
-			)
-			for i, c in enumerate(colors)
+			) for i, c in enumerate(colors)
 		)
 	)
 end
@@ -323,4 +322,4 @@ stripe_class.data = {}
 		});
 		</script>
 	</body>
-</html>
+</html
