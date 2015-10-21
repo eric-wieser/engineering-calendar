@@ -1,1 +1,1 @@
-web: gunicorn main:app --bind=$HOST:$PORT
+web: gunicorn main:root --bind=$HOST:$PORT
