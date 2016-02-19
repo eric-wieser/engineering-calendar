@@ -38,7 +38,7 @@ stripe_class.data = {}
 <html>
 	<head>
 		<link rel="icon" type="image/png" href="http://cdn.dustball.com/calendar.png">
-		<title>{{term.title()}} calendars</title>
+		<title>{{term.title()}} calendars - new</title>
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		<style>
