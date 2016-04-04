@@ -51,11 +51,12 @@ class Lab(object):
 
 
 class Timetable(object):
-	def __init__(self, table, dates, groups, course):
+	def __init__(self, table, dates, groups, course, last_mod):
 		self.dates = dates
 		self.groups = groups
 		self.table = table
 		self.course = course
+		self.last_mod = last_mod
 
 	def labs_for(self, lab_code):
 		return self.table[lab_code]
@@ -81,6 +82,7 @@ class CourseYear(object):
 	def __init__(self, part, year, xls_fname):
 		self.part = part
 		self.year = year
+		self.xls_fname = xls_fname
 		self._wb = xlrd.open_workbook(xls_fname, formatting_info=True)
 		self.slots = self._get_slots()
 		self.labs = self._get_labs()
@@ -265,4 +267,9 @@ class CourseYear(object):
 				codes = get_code(r, c).split(',')
 				results[group][date] = [self.labs[code] for code in codes if code]
 
-		return Timetable(dates=dates, groups=groups, table=results, course=self)
+		#Last mod date of file:
+		import os, time
+		(mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(self.xls_fname)
+		#print "last modified: %s" % time.ctime(mtime)
+
+		return Timetable(dates=dates, groups=groups, table=results, course=self, last_mod=time.ctime(mtime))

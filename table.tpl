@@ -58,7 +58,7 @@ stripe_class.data = {}
 			}
 			.table-condensed>*>tr>td,
 			.table-condensed>*>tr>th  {
-				padding: 2px !important;
+				/* padding: 2px !important;  */
 			}
 			td.active, th.active{
 				background-color: #f5f5f5;
@@ -67,13 +67,80 @@ stripe_class.data = {}
 				min-width: {{ 25 * (len(tt.dates) + 2) }}px !important;
 				max-width: auto !important;
 			}
-			/* */
+			/* kludge to make these table printable on A4 (hopefully)*/
+			@media print {
+				a[href]:after {
+				content: none !important;
+				}
+				.table-condensed>*>tr>th  {
+					padding: 1px !important;
+				}
+				table { 
+					width: 100% !important;
+				}
+				.no_print{
+					display: none;
+				}
+				.container{
+					width: 100%;
+				}
+				.day_name{
+					/* font-size: 50%; */
+				}
+				th, td, tr {
+					font-size: 80%; 
+					padding: 0px !important;
+					margin: 0px !important;
+				}
+				tbody tr td{
+					font-size: 140%;
+				} 
+				tbody tr th{
+					font-size: 110%;
+				}
+				h1, h2 { 
+					font-size: 200%; 
+				}
+				h3 { 
+					font-size: 150%; 
+				}
+				body {
+					font-size: 80% !important;
+				}
+				table {
+					min-width: 1px !important;
+					max-width: auto !important;
+				}
+				.col-sm-6 {
+					width: 30%;
+					float: left;
+				}
+				tbody tr:nth-child(even){
+					border-bottom: solid #000;
+					border-width: 0 1px !important;
+				}
+				.lab_pad_small{
+					padding-bottom: 2px;
+					padding-top: 2px;
+					margin-bottom: 0px;
+					margin-top: 0px;
+				}
+				/*
+				.text-muted, .key_yexy{
+					font-size: 150%;
+				}*/
+			}
+			@page {
+				/*size: 21cm 29.7cm;*/
+				margin: 1mm 1mm 1mm 1mm; /* change the margins as you want them to be. */
+			}
 		</style>
 	</head>
 	<body>
 		% seen_labs = set()
 		<div class="container">
-			<h1>Part {{part.upper()}}, {{term.title()}} lab calendars</h1>
+			<h1>Part {{part.upper()}}, {{term.title()}} lab calendars {{ year }} <small>(last modified {{ tt.last_mod }})</small></h1>
+			<div class="no_print">
 			<div class="row">
 				<div class="col-md-6">
 					<p>The table below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
@@ -83,6 +150,7 @@ stripe_class.data = {}
 					<p>Known to work with google calendar, assumed to work with iCalendar and live calendar.</p>
 					<p>If you're lucky, clicking on the links should open the calendars in your default program. If you're not, copy the url of your group link, and follow online instructions for subscribing to an "ICS" or "iCal" web calendar.</p>
 				</div>
+			</div>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-bordered table-condensed small" style="table-layout: fixed">
@@ -125,7 +193,7 @@ stripe_class.data = {}
 						<tr>
 							<th colspan="2"></th>
 							% for d in tt.dates:
-								<th title="{{d.isoformat()}}">{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
+								<th class="day_name" title="{{d.isoformat()}}">{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
 							% end
 						</tr>
 					</thead>
@@ -249,7 +317,7 @@ stripe_class.data = {}
 				</table>
 			</div>
 			<div>
-				<h2>Key</h2>
+				<h2 class="no_print">Key</h2>
 				<%
 				import itertools
 				labs = sorted(seen_labs, key=lambda l: (l.group, natural_key(l.code)))
@@ -271,13 +339,15 @@ stripe_class.data = {}
 							</h3>
 
 							% for lab in labs:
-								<p style="padding-left: 40px">
+								<p style="padding-left: 40px" class="lab_pad_small">
 									<tt class="key" style="background-color: {{color(lab.code, 0.3) }}">{{ lab.code }}</tt>
+									<span class="key_text">
 									% if lab.link:
 										<a target="_blank" href="{{ lab.link }}">{{ lab.name }}</a>
 									% else:
 										{{lab.name}}
 									% end
+									</span>
 									<br />
 									<small class="text-muted">{{ lab.location }}</small>
 								</p>
@@ -287,7 +357,7 @@ stripe_class.data = {}
 				</div>
 			</div>
 		</div>
-		<a href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+		<a class="no_print" href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 		<style>
 			% for cls, codes in stripe_class.data.items():
 				.{{cls}} { background-image: {{ stripes(codes) }}; }
