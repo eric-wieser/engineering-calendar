@@ -327,7 +327,7 @@ stripe_class.data = {}
 				%>
 				<div class="row">
 					% for group, labs in grouped:
-						<div class="col-md-4 col-sm-6">
+						<div class="col-md-12 col-sm-6 col-xs-12">
 							<h3>
 								% m = re.match(r'^([A-Z]{2,}(?: [A-Z]+)*)(.*)$', group)
 								% if m:
