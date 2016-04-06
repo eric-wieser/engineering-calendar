@@ -46,6 +46,15 @@ stripe_class.data = {}
 				vertical-align: middle !important;
 				text-align: center;
 			}
+			.lab_pad_small{
+					padding-bottom: 2px;
+					padding-top: 2px;
+					margin-bottom: 0px;
+					margin-top: 0px;
+					float:left;
+					width: 25%;
+					
+				}
 			tt.key {
 				display: block;
 				width: 25px;
@@ -77,7 +86,13 @@ stripe_class.data = {}
 				}
 				table { 
 					width: 100% !important;
+					margin: 0px;
+
 				}
+				.lab_pad_small{
+					border: solid thin;
+				}
+				
 				.no_print{
 					display: none;
 				}
@@ -99,10 +114,12 @@ stripe_class.data = {}
 					font-size: 110%;
 				}
 				h1, h2 { 
-					font-size: 200%; 
+					font-size: 100%; 
+					margin: 0px;
 				}
 				h3 { 
-					font-size: 150%; 
+					font-size: 150%;
+					margin: 0px ;
 				}
 				body {
 					font-size: 80% !important;
@@ -111,24 +128,13 @@ stripe_class.data = {}
 					min-width: 1px !important;
 					max-width: auto !important;
 				}
-				.col-sm-6 {
-					width: 30%;
-					float: left;
-				}
+				
 				tbody tr:nth-child(even){
 					border-bottom: solid #000;
 					border-width: 0 1px !important;
 				}
-				.lab_pad_small{
-					padding-bottom: 2px;
-					padding-top: 2px;
-					margin-bottom: 0px;
-					margin-top: 0px;
-				}
-				/*
-				.text-muted, .key_yexy{
-					font-size: 150%;
-				}*/
+				
+				
 			}
 			@page {
 				/*size: 21cm 29.7cm;*/
