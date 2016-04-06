@@ -139,12 +139,12 @@ stripe_class.data = {}
 	<body>
 		% seen_labs = set()
 		<div class="container">
-			<h1>Partl {{part.upper()}}, {{term.title()}} lab calendars {{ year }} <small>(last modified {{ tt.last_mod }})</small></h1>
+			<h1>Part {{part.upper()}}, {{term.title()}} lab calendars {{ year }} <small>(last modified {{ tt.last_mod }})</small></h1>
 			<div class="no_print">
 			<div class="row">
 				<div class="col-md-6">
 					<p>The table below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
-					<p>If you spot a mistake, please report it to <code>efw27</code>. I continue to claim no responsibility for missed labs due to false information.</p>
+					<p>If you spot a mistake, please report it to the <code>teaching-office</code>. I continue to claim no responsibility for missed labs due to false information.</p>
 				</div>
 				<div class="col-md-6">
 					<p>Known to work with google calendar, assumed to work with iCalendar and live calendar.</p>
