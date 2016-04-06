@@ -92,7 +92,9 @@ stripe_class.data = {}
 				.lab_pad_small{
 					border: solid thin;
 				}
-				
+				.table{
+				margin-bottom: 0px;
+				}
 				.no_print{
 					display: none;
 				}
