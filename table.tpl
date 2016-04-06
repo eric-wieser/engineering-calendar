@@ -143,7 +143,7 @@ stripe_class.data = {}
 			<div class="no_print">
 			<div class="row">
 				<div class="col-md-6">
-					<p>The table below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
+					<p>The tables below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
 					<p>If you spot a mistake, please report it to <code>efw27</code>. I continue to claim no responsibility for missed labs due to false information.</p>
 				</div>
 				<div class="col-md-6">
