@@ -72,6 +72,11 @@ stripe_class.data = {}
 				a[href]:after {
 				content: none !important;
 				}
+				h1{
+					font-size: 200%;
+					text-align: center;
+				
+				}
 				.table-condensed>*>tr>th  {
 					padding: 1px !important;
 				}
