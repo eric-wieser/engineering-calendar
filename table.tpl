@@ -380,7 +380,7 @@ stripe_class.data = {}
 				<br>
 				<b> Laboratory Times(Afternoons)</b> All activites: Drawing and Integrated Integrated Electrical Project: 14:00 - 16:30, Computing and Structural Design(SA): 14:00-16:00 
 				<br>
-				 Laboratory sessions being five minutes past the hour. Latecomers will be penalised and may be excluded
+				 Laboratory sessions begin five minutes past the hour. Latecomers will be penalised and may be excluded.
 				<br class="no_print">
 				<br class="no_print">
 				<br class="no_print">
