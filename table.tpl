@@ -84,6 +84,11 @@ stripe_class.data = {}
 				.table-condensed>*>tr>th  {
 					padding: 1px !important;
 				}
+				h1{
+					font-size: 200%;
+					text-align: center;
+				
+				}
 				.footer{
 					font-size:bold;
 					font-size: 100%;
@@ -120,7 +125,7 @@ stripe_class.data = {}
 				tbody tr th{
 					font-size: 110%;
 				}
-				h1, h2 { 
+				h2 { 
 					font-size: 100%; 
 					margin: 0px;
 				}
