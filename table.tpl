@@ -374,12 +374,16 @@ stripe_class.data = {}
 					% end
 				</div>
 			</div>
-			<div class="footer">			
+			<div class="footer">
+				<br class="no_print">			
 				<b> Laboratory Times(Mornings)</b> All Activities: Mondays and Fridays, 09.00-11.00; Tuesdays and Thursdays, 11:00-13:00
 				<br>
 				<b> Laboratory Times(Afternoons)</b> All activites: Drawing and Integrated Integrated Electrical Project: 14:00 - 16:30, Computing and Structural Design(SA): 14:00-16:00 
 				<br>
-				<b> Laboratory sessions being five minutes past the house. Latecomers will be penalised and may excluded
+				 Laboratory sessions being five minutes past the hour. Latecomers will be penalised and may be excluded
+				<br class="no_print">
+				<br class="no_print">
+				<br class="no_print">
 			</div>
 		</div>
 		<a class="no_print" href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
