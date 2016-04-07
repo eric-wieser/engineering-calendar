@@ -11,16 +11,6 @@ def color(code, alpha=0.1):
 	codes = sorted(tt.course.labs.keys(), key=natural_key)
 	i = 360 * codes.index(code) // len(codes)
 	return "hsla({}, 100%, 50%, {})".format(i, alpha)
-end
-
-def stripes(codes, alpha=0.1):
-	import math
-	colors = [color(c, alpha) for c in codes]
-	step = 22 / math.sqrt(2)
-
-	return "repeating-linear-gradient(45deg, {stops})".format(
-		stops=', '.join(
-			'{c} {pos1:.2f}px, {c} {pos2:.2f}px'.format(
 				c=c, pos1=i*step, pos2=(i + 1)*step
 			) for i, c in enumerate(colors)
 		)
@@ -382,7 +372,7 @@ stripe_class.data = {}
 				<br>
 				 Laboratory sessions begin five minutes past the hour. Latecomers will be penalised and may be excluded.
 				<br class="no_print">
-				{{request.url}}
+				{{request.GetUurl()}}
 				<br class="no_print">
 				<br class="no_print">
 			</div>
