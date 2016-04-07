@@ -78,6 +78,11 @@ stripe_class.data = {}
 				table { 
 					width: 100% !important;
 				}
+				.footer{
+					font-size:bold;
+					font-size: 100%;
+					border: solid thin;
+				}
 				.no_print{
 					display: none;
 				}
@@ -391,5 +396,12 @@ stripe_class.data = {}
 			});
 		});
 		</script>
+				<div class="footer">			
+				<b> Laboratory Times(Mornings)</b> All Activities: Mondays and Fridays, 09.00-11.00; Tuesdays and Thursdays, 11:00-13:00
+				<br>
+				<b> Laboratory Times(Afternoons)</b> All activites: Drawing and Integrated Integrated Electrical Project: 14:00 - 16:30, Computing and Structural Design(SA): 14:00-16:00 
+				<br>
+				<b> Laboratory sessions being five minutes past the house. Latecomers will be penalised and may excluded
+				</div>	
 	</body>
 </html
