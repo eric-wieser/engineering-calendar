@@ -263,7 +263,7 @@ stripe_class.data = {}
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l.name}}&NewLine;{{l.location}}"
-										    class="{{ stripe_class([l.code]) }}">
+										    class="{{ stripe_class([l.code]) }} code_{{l.code}}">
 											<tt>{{ l.code }}</tt>
 										</td>
 									% elif len(labs[d]) == 2:
@@ -271,7 +271,7 @@ stripe_class.data = {}
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
-										    class="{{ stripe_class([l1.code, l2.code]) }}">
+										    class="{{ stripe_class([l1.code, l2.code]) }} code_{{l1.code}} code_{{l2.code}}">
 											<tt>
 												% if nrows > 1:
 													{{ l1.code }}<br />{{l2.code}}
@@ -281,7 +281,7 @@ stripe_class.data = {}
 											</tt>
 										</td>
 									% else:
-										<td rowspan="{{nrows}}" class="small">
+										<td rowspan="{{nrows}}" class="small {{ ' '.join("code_"+l.code for l in labs[d]) }}">
 											{{ ','.join(l.code for l in labs[d]) }}
 										</td>
 									% end
