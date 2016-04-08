@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from datetime import datetime, time
 import re
+import os
 
 import xlrd
 
@@ -85,6 +86,7 @@ class CourseYear(object):
 		self._wb = xlrd.open_workbook(xls_fname, formatting_info=True)
 		self.slots = self._get_slots()
 		self.labs = self._get_labs()
+		self.last_mod = datetime.fromtimestamp(os.path.getmtime(xls_fname))
 
 		self._timetable = {}
 
