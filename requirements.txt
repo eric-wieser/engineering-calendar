@@ -1,5 +1,5 @@
 icalendar==3.9.1
 xlrd==0.9.4
 pytz==2015.4		  
-gunicorn==19.3.0
+gunicorn
 -e git+git://github.com/bottlepy/bottle.git@854fbd7f88aa2f809f54dd724aea7ecf918a3b6e#egg=bottle
