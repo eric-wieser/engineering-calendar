@@ -11,18 +11,19 @@ def color(code, alpha=0.1):
 	codes = sorted(tt.course.labs.keys(), key=natural_key)
 	i = 360 * codes.index(code) // len(codes)
 	return "hsla({}, 100%, 50%, {})".format(i, alpha)
-end		
-		
-def stripes(codes, alpha=0.1):		
-	import math		
-	colors = [color(c, alpha) for c in codes]		
-	step = 22 / math.sqrt(2)		
-		
-	return "repeating-linear-gradient(45deg, {stops})".format(		
-		stops=', '.join(		
+end
+
+def stripes(codes, alpha=0.1):
+	import math
+	colors = [color(c, alpha) for c in codes]
+	step = 22 / math.sqrt(2)
+
+	return "repeating-linear-gradient(45deg, {stops})".format(
+		stops=', '.join(
 			'{c} {pos1:.2f}px, {c} {pos2:.2f}px'.format(
 				c=c, pos1=i*step, pos2=(i + 1)*step
-			) for i, c in enumerate(colors)
+			)
+			for i, c in enumerate(colors)
 		)
 	)
 end
@@ -38,7 +39,7 @@ stripe_class.data = {}
 <html>
 	<head>
 		<link rel="icon" type="image/png" href="http://cdn.dustball.com/calendar.png">
-		<title>{{term.title()}} calendars - new</title>
+		<title>{{tt.term.title()}} calendars - new</title>
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		<style>
@@ -53,7 +54,7 @@ stripe_class.data = {}
 					margin-top: 0px;
 					float:left;
 					width: 25%;
-					
+
 				}
 			tt.key {
 				display: block;
@@ -87,14 +88,14 @@ stripe_class.data = {}
 				h1{
 					font-size: 200%;
 					text-align: center;
-				
+
 				}
 				.footer{
 					font-size:bold;
 					font-size: 100%;
 					border: solid thin;
 				}
-				table { 
+				table {
 					width: 100% !important;
 					margin: 0px;
 
@@ -118,21 +119,21 @@ stripe_class.data = {}
 					/* font-size: 50%; */
 				}
 				th, td, tr {
-					font-size: 80%; 
+					font-size: 80%;
 					padding: 0px !important;
 					margin: 0px !important;
 				}
 				tbody tr td{
 					font-size: 140%;
-				} 
+				}
 				tbody tr th{
 					font-size: 110%;
 				}
-				h2 { 
-					font-size: 100%; 
+				h2 {
+					font-size: 100%;
 					margin: 0px;
 				}
-				h3 { 
+				h3 {
 					font-size: 150%;
 					margin: 0px ;
 				}
@@ -143,13 +144,13 @@ stripe_class.data = {}
 					min-width: 1px !important;
 					max-width: auto !important;
 				}
-				
+
 				tbody tr:nth-child(even){
 					border-bottom: solid #000;
 					border-width: 0 1px !important;
 				}
-				
-				
+
+
 			}
 			@page {
 				/*size: 21cm 29.7cm;*/
@@ -160,7 +161,7 @@ stripe_class.data = {}
 	<body>
 		% seen_labs = set()
 		<div class="container">
-			<h1>Part {{part.upper()}}, {{term.title()}} lab calendars {{ year }} <small>(last modified {{ tt.last_mod }})</small></h1>
+			<h1>Part {{tt.course.part.upper()}}, {{tt.term.title()}} lab calendars {{ tt.course.year }} <small>(last modified {{ tt.course.last_mod }})</small></h1>
 			<div class="no_print">
 			<div class="row">
 				<div class="col-md-6">
@@ -378,10 +379,10 @@ stripe_class.data = {}
 				</div>
 			</div>
 			<div class="footer">
-				<br class="no_print"/>			
+				<br class="no_print"/>
 				<b> Laboratory Times(Mornings)</b> All Activities: Mondays and Fridays, 09.00-11.00; Tuesdays and Thursdays, 11:00-13:00
 				<br/>
-				<b> Laboratory Times(Afternoons)</b> All activites: Drawing and Integrated Integrated Electrical Project: 14:00 - 16:30, Computing and Structural Design(SA): 14:00-16:00 
+				<b> Laboratory Times(Afternoons)</b> All activites: Drawing and Integrated Integrated Electrical Project: 14:00 - 16:30, Computing and Structural Design(SA): 14:00-16:00
 				<br/>
 				 Laboratory sessions begin five minutes past the hour. Latecomers will be penalised and may be excluded.
 				<br/>
@@ -425,4 +426,4 @@ stripe_class.data = {}
 		});
 		</script>
 	</body>
-</html
+</html>

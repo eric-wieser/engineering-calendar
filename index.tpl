@@ -43,5 +43,5 @@
 				</div>
 			% end
 		</div>
-		</body>
+	</body>
 </html>
