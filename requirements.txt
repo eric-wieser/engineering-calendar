@@ -5,4 +5,4 @@ six==1.10.0
 wheel==0.24.0
 xlrd==0.9.4
 gunicorn==19.3.0
--e git+git://github.com/bottlepy/bottle.git@0.12.8#egg=bottle --no-use-wheel
+-e git+git://github.com/bottlepy/bottle.git@7fd47d00e7470852146f2aa1752d566ed4d3f7e1#egg=bottle
