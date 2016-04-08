@@ -51,11 +51,12 @@ class Lab(object):
 
 
 class Timetable(object):
-	def __init__(self, table, dates, groups, course):
+	def __init__(self, table, dates, groups, course, term):
 		self.dates = dates
 		self.groups = groups
 		self.table = table
 		self.course = course
+		self.term = term
 
 	def labs_for(self, lab_code):
 		return self.table[lab_code]
@@ -265,4 +266,4 @@ class CourseYear(object):
 				codes = get_code(r, c).split(',')
 				results[group][date] = [self.labs[code] for code in codes if code]
 
-		return Timetable(dates=dates, groups=groups, table=results, course=self)
+		return Timetable(dates=dates, groups=groups, table=results, course=self, term=name)

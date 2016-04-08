@@ -39,7 +39,7 @@ stripe_class.data = {}
 <html>
 	<head>
 		<link rel="icon" type="image/png" href="http://cdn.dustball.com/calendar.png">
-		<title>{{term.title()}} calendars</title>
+		<title>{{tt.term.title()}} calendars</title>
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		<style>
@@ -74,7 +74,7 @@ stripe_class.data = {}
 	<body>
 		% seen_labs = set()
 		<div class="container">
-			<h1>Part {{part.upper()}}, {{term.title()}} lab calendars</h1>
+			<h1>Part {{tt.course.part.upper()}}, {{tt.term.title()}} lab calendars</h1>
 			<div class="row">
 				<div class="col-md-6">
 					<p>The table below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
