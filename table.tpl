@@ -100,12 +100,10 @@ stripe_class.data = {}
 
 				}
 				.lab_pad_small{
-					padding-bottom: 2px;
-					padding-top: 2px;
-					margin-bottom: 0px;
-					margin-top: 0px;
-					float:left;
-					width: 25%;
+					border: solid thin;
+					border-width: 1px;
+					margin-left: -1px;
+					margin-top: -1px;
 				}
 				.table{
 				margin-bottom: 0px;
