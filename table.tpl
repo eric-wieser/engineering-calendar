@@ -373,7 +373,6 @@ stripe_class.data = {}
 				 Laboratory sessions begin five minutes past the hour. Latecomers will be penalised and may be excluded.
 				<br class="no_print">
 				<br class="no_print">
-				URL: {{request.getUrl()}}
 				<br class="no_print">
 			</div>
 		</div>
