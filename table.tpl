@@ -22,7 +22,8 @@ def stripes(codes, alpha=0.1):
 		stops=', '.join(
 			'{c} {pos1:.2f}px, {c} {pos2:.2f}px'.format(
 				c=c, pos1=i*step, pos2=(i + 1)*step
-			) for i, c in enumerate(colors)
+			)
+			for i, c in enumerate(colors)
 		)
 	)
 end
@@ -38,7 +39,7 @@ stripe_class.data = {}
 <html>
 	<head>
 		<link rel="icon" type="image/png" href="http://cdn.dustball.com/calendar.png">
-		<title>{{term.title()}} calendars - new</title>
+		<title>{{tt.term.title()}} calendars - new</title>
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		<style>
@@ -46,6 +47,15 @@ stripe_class.data = {}
 				vertical-align: middle !important;
 				text-align: center;
 			}
+			.lab_pad_small{
+					padding-bottom: 2px;
+					padding-top: 2px;
+					margin-bottom: 0px;
+					margin-top: 0px;
+					float:left;
+					width: 25%;
+
+				}
 			tt.key {
 				display: block;
 				width: 25px;
@@ -80,8 +90,29 @@ stripe_class.data = {}
 				.table-condensed>*>tr>th  {
 					padding: 1px !important;
 				}
-				table { 
+				h1{
+					font-size: 200%;
+					text-align: center;
+
+				}
+				.footer{
+					font-size:bold;
+					font-size: 100%;
+					border: solid thin;
+				}
+				table {
 					width: 100% !important;
+					margin: 0px;
+
+				}
+				.lab_pad_small{
+					border: solid thin;
+					border-width: 1px;
+					margin-left: -1px;
+					margin-top: -1px;
+				}
+				.table{
+				margin-bottom: 0px;
 				}
 				.footer{
 					font-size:bold;
@@ -98,21 +129,23 @@ stripe_class.data = {}
 					/* font-size: 50%; */
 				}
 				th, td, tr {
-					font-size: 80%; 
+					font-size: 80%;
 					padding: 0px !important;
 					margin: 0px !important;
 				}
 				tbody tr td{
 					font-size: 140%;
-				} 
+				}
 				tbody tr th{
 					font-size: 110%;
 				}
-				h1, h2 { 
-					font-size: 200%; 
+				h2 {
+					font-size: 100%;
+					margin: 0px;
 				}
-				h3 { 
-					font-size: 150%; 
+				h3 {
+					font-size: 150%;
+					margin: 0px ;
 				}
 				body {
 					font-size: 80% !important;
@@ -121,24 +154,13 @@ stripe_class.data = {}
 					min-width: 1px !important;
 					max-width: auto !important;
 				}
-				.col-sm-6 {
-					width: 30%;
-					float: left;
-				}
+
 				tbody tr:nth-child(even){
 					border-bottom: solid #000;
 					border-width: 0 1px !important;
 				}
-				.lab_pad_small{
-					padding-bottom: 2px;
-					padding-top: 2px;
-					margin-bottom: 0px;
-					margin-top: 0px;
-				}
-				/*
-				.text-muted, .key_yexy{
-					font-size: 150%;
-				}*/
+
+
 			}
 			@page {
 				/*size: 21cm 29.7cm;*/
@@ -149,12 +171,12 @@ stripe_class.data = {}
 	<body>
 		% seen_labs = set()
 		<div class="container">
-			<h1>Part {{part.upper()}}, {{term.title()}} lab calendars {{ year }} <small>(last modified {{ tt.last_mod }})</small></h1>
+			<h1>Part {{tt.course.part.upper()}}, {{tt.term.title()}} lab calendars {{ tt.course.year }} <small>(last modified {{ tt.course.last_mod }})</small></h1>
 			<div class="no_print">
 			<div class="row">
 				<div class="col-md-6">
-					<p>The table below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
-					<p>If you spot a mistake, please report it to <code>efw27</code>. I continue to claim no responsibility for missed labs due to false information.</p>
+					<p>The tables below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
+					<p>If you spot a mistake, please report it to the <code>teaching-office</code>. I continue to claim no responsibility for missed labs due to false information.</p>
 				</div>
 				<div class="col-md-6">
 					<p>Known to work with google calendar, assumed to work with iCalendar and live calendar.</p>
@@ -255,7 +277,7 @@ stripe_class.data = {}
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l.name}}&NewLine;{{l.location}}"
-										    class="{{ stripe_class([l.code]) }}">
+										    class="{{ stripe_class([l.code]) }} code_{{l.code}}">
 											<tt>{{ l.code }}</tt>
 										</td>
 									% elif len(labs[d]) == 2:
@@ -263,7 +285,7 @@ stripe_class.data = {}
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
-										    class="{{ stripe_class([l1.code, l2.code]) }}">
+										    class="{{ stripe_class([l1.code, l2.code]) }} code_{{l1.code}} code_{{l2.code}}">
 											<tt>
 												% if nrows > 1:
 													{{ l1.code }}<br />{{l2.code}}
@@ -273,7 +295,7 @@ stripe_class.data = {}
 											</tt>
 										</td>
 									% else:
-										<td rowspan="{{nrows}}" class="small">
+										<td rowspan="{{nrows}}" class="small {{ ' '.join("code_"+l.code for l in labs[d]) }}">
 											{{ ','.join(l.code for l in labs[d]) }}
 										</td>
 									% end
@@ -337,7 +359,7 @@ stripe_class.data = {}
 				%>
 				<div class="row">
 					% for group, labs in grouped:
-						<div class="col-md-4 col-sm-6">
+						<div class="col-md-12 col-sm-6 col-xs-12">
 							<h3>
 								% m = re.match(r'^([A-Z]{2,}(?: [A-Z]+)*)(.*)$', group)
 								% if m:
@@ -365,6 +387,18 @@ stripe_class.data = {}
 						</div>
 					% end
 				</div>
+			</div>
+			<div class="footer">
+				<br class="no_print"/>
+				<b> Laboratory Times(Mornings)</b> All Activities: Mondays and Fridays, 09.00-11.00; Tuesdays and Thursdays, 11:00-13:00
+				<br/>
+				<b> Laboratory Times(Afternoons)</b> All activites: Drawing and Integrated Integrated Electrical Project: 14:00 - 16:30, Computing and Structural Design(SA): 14:00-16:00
+				<br/>
+				 Laboratory sessions begin five minutes past the hour. Latecomers will be penalised and may be excluded.
+				<br/>
+				file located at: {{ request.urlparts.geturl() }}
+				<br class="no_print"/>
+				<br class="no_print"/>
 			</div>
 		</div>
 		<a class="no_print" href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
@@ -409,4 +443,4 @@ stripe_class.data = {}
 				<b> Laboratory sessions being five minutes past the house. Latecomers will be penalised and may excluded
 				</div>	
 	</body>
-</html
+</html>
