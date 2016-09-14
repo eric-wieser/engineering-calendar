@@ -1,0 +1,14 @@
+# Should I run on boot?
+RUN=yes
+
+# Where are configuration files?
+CONF_DIR=/etc/gunicorn
+
+# Which configuration file should I run?
+CONFIGS=("labcals-live" "labcals-staging")
+
+# Run as user
+RUN_USER=sms67
+
+# Use virtualenvs to run gunicorns
+USE_VIRTUALENVS=yes
