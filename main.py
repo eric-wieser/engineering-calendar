@@ -56,7 +56,7 @@ def index():
 @view('table')
 def ia_term_table(year, part, term):
 	timetable = CourseYear.get(part, year).term(term)
-	return dict(part=part, term=term, tt=timetable, year=year)
+	return dict(tt=timetable)
 
 @route(r'/<year:int>/<part:re:ia|ib>/<term:re:mich|lent|easter>/examples.ics')
 def ia_term_calendar(year, part, term):

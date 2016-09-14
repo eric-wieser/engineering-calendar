@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from datetime import datetime, time
 import re
+import os
 
 import xlrd
 
@@ -51,12 +52,12 @@ class Lab(object):
 
 
 class Timetable(object):
-	def __init__(self, table, dates, groups, course, last_mod):
+	def __init__(self, table, dates, groups, course, term):
 		self.dates = dates
 		self.groups = groups
 		self.table = table
 		self.course = course
-		self.last_mod = last_mod
+		self.term = term
 
 	def labs_for(self, lab_code):
 		return self.table[lab_code]
@@ -86,6 +87,7 @@ class CourseYear(object):
 		self._wb = xlrd.open_workbook(xls_fname, formatting_info=True)
 		self.slots = self._get_slots()
 		self.labs = self._get_labs()
+		self.last_mod = datetime.fromtimestamp(os.path.getmtime(xls_fname))
 
 		self._timetable = {}
 
@@ -267,9 +269,4 @@ class CourseYear(object):
 				codes = get_code(r, c).split(',')
 				results[group][date] = [self.labs[code] for code in codes if code]
 
-		#Last mod date of file:
-		import os, time
-		(mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(self.xls_fname)
-		#print "last modified: %s" % time.ctime(mtime)
-
-		return Timetable(dates=dates, groups=groups, table=results, course=self, last_mod=time.ctime(mtime))
+		return Timetable(dates=dates, groups=groups, table=results, course=self, term=name)
