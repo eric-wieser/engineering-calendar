@@ -354,11 +354,11 @@ stripe_class.data = {}
 				import itertools
 				labs = sorted(seen_labs, key=lambda l: (l.group, natural_key(l.code)))
 
-				grouped = [(group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
-				grouped = sorted(grouped, key=lambda i: len(i[1]), reverse=True)
+				grouped = [(group, group!='Other', list(l) ) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
+				grouped = sorted(grouped, key=lambda i: (i[1], len(i[2])), reverse=True)
 				%>
 				<div class="row">
-					% for group, labs in grouped:
+					% for group, isother, labs in grouped:
 						<div class="col-md-12 col-sm-6 col-xs-12">
 							<h3>
 								% m = re.match(r'^([A-Z]{2,}(?: [A-Z]+)*)(.*)$', group)
