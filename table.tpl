@@ -401,7 +401,6 @@ stripe_class.data = {}
 				<br class="no_print"/>
 			</div>
 		</div>
-		<a class="no_print" href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 		<style>
 			% for cls, codes in stripe_class.data.items():
 				.{{cls}} { background-image: {{ stripes(codes) }}; }
