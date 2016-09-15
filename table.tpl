@@ -176,11 +176,11 @@ stripe_class.data = {}
 			<div class="row">
 				<div class="col-md-6">
 					<p>The tables below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
-					<p>If you spot a mistake, please report it to the <code>teaching-office</code>. I continue to claim no responsibility for missed labs due to false information.</p>
+					<p>If you spot a mistake, please report it to the <code>teaching-office</code></p>
 				</div>
 				<div class="col-md-6">
 					<p>Known to work with google calendar, assumed to work with iCalendar and live calendar.</p>
-					<p>If you're lucky, clicking on the links should open the calendars in your default program. If you're not, copy the url of your group link, and follow online instructions for subscribing to an "ICS" or "iCal" web calendar.</p>
+					<p>Clicking on the links should open the calendars in your default program. If you're not, copy the url of your group link, and follow online instructions for subscribing to an "ICS" or "iCal" web calendar.</p>
 				</div>
 			</div>
 			</div>
@@ -354,11 +354,11 @@ stripe_class.data = {}
 				import itertools
 				labs = sorted(seen_labs, key=lambda l: (l.group, natural_key(l.code)))
 
-				grouped = [(group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
-				grouped = sorted(grouped, key=lambda i: len(i[1]), reverse=True)
+				grouped = [(group, group!='Other', list(l) ) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
+				grouped = sorted(grouped, key=lambda i: (i[1], len(i[2])), reverse=True)
 				%>
 				<div class="row">
-					% for group, labs in grouped:
+					% for group, isother, labs in grouped:
 						<div class="col-md-12 col-sm-6 col-xs-12">
 							<h3>
 								% m = re.match(r'^([A-Z]{2,}(?: [A-Z]+)*)(.*)$', group)
@@ -401,7 +401,6 @@ stripe_class.data = {}
 				<br class="no_print"/>
 			</div>
 		</div>
-		<a class="no_print" href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 		<style>
 			% for cls, codes in stripe_class.data.items():
 				.{{cls}} { background-image: {{ stripes(codes) }}; }
