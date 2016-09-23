@@ -28,6 +28,7 @@ def stripes(codes, alpha=0.1):
 	)
 end
 
+
 def stripe_class(codes):
 	cls = 'lab-colored_'+'-'.join(codes)
 	stripe_class.data[cls] = codes
@@ -175,7 +176,7 @@ stripe_class.data = {}
 			<div class="no_print">
 			<div class="row">
 				<div class="col-md-6">
-					<p>The tables below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
+					<p>Group names in the left column link to the web calendars</p>
 					<p>If you spot a mistake, please report it to the <code>teaching-office</code></p>
 				</div>
 				<div class="col-md-6">
@@ -390,9 +391,9 @@ stripe_class.data = {}
 			</div>
 			<div class="footer">
 				<br class="no_print"/>
-				<b> Laboratory Times(Mornings)</b> All Activities: Mondays and Fridays, 09.00-11.00; Tuesdays and Thursdays, 11:00-13:00
+				Morning labs are timetabled in the main lecture timetable. <b> IA </b>: Mon &amp; Fri, 09.00-11.00; Tue &amp; Thu, 11:00-13:00. <b> IB </b>: Tue &amp; Thu, 09.00-11.00; Mon &amp; Fri, 11:00-13:00.
 				<br/>
-				<b> Laboratory Times(Afternoons)</b> All activites: Drawing and Integrated Integrated Electrical Project: 14:00 - 16:30, Computing and Structural Design(SA): 14:00-16:00
+				Afternoon labs start at 2pm. The end time may vary, consult the corresponding lab information.
 				<br/>
 				 Laboratory sessions begin five minutes past the hour. Latecomers will be penalised and may be excluded.
 				<br/>
