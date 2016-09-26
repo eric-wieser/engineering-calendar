@@ -391,7 +391,7 @@ stripe_class.data = {}
 			</div>
 			<div class="footer">
 				<br class="no_print"/>
-				Morning labs are timetabled in the main lecture timetable. <b> IA </b>: Mon &amp; Fri, 09.00-11.00; Tue &amp; Thu, 11:00-13:00. <b> IB </b>: Tue &amp; Thu, 09.00-11.00; Mon &amp; Fri, 11:00-13:00.
+				Morning labs are timetabled in the main lecture timetable. <b> IA </b>: Mon &amp; Fri, 09.00-11.00; Tue &amp; Thu, 11:00-13:00. <b> IB </b>: Mon, 11:00-13:00; Tue, Wed &amp; Thu, 09.00-11.00.
 				<br/>
 				Afternoon labs start at 2pm. The end time may vary, consult the corresponding lab information.
 				<br/>
