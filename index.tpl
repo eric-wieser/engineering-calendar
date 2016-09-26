@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>Online web calendars for the CUED labs and example classes</h1>
+			<h1>Online web calendars for the CUED labs</h1>
 			% for year, p in parts:
 				<h2>{{ year }} &ndash; {{year + 1}}</h2>
 				<div class="row">
@@ -43,6 +43,5 @@
 				</div>
 			% end
 		</div>
-		<a href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 	</body>
 </html>

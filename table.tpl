@@ -28,6 +28,7 @@ def stripes(codes, alpha=0.1):
 	)
 end
 
+
 def stripe_class(codes):
 	cls = 'lab-colored_'+'-'.join(codes)
 	stripe_class.data[cls] = codes
@@ -39,7 +40,7 @@ stripe_class.data = {}
 <html>
 	<head>
 		<link rel="icon" type="image/png" href="http://cdn.dustball.com/calendar.png">
-		<title>{{tt.term.title()}} calendars</title>
+		<title>{{tt.term.title()}} calendars - new</title>
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		<style>
@@ -47,6 +48,15 @@ stripe_class.data = {}
 				vertical-align: middle !important;
 				text-align: center;
 			}
+			.lab_pad_small{
+					padding-bottom: 2px;
+					padding-top: 2px;
+					margin-bottom: 0px;
+					margin-top: 0px;
+					float:left;
+					width: 25%;
+
+				}
 			tt.key {
 				display: block;
 				width: 25px;
@@ -59,7 +69,7 @@ stripe_class.data = {}
 			}
 			.table-condensed>*>tr>td,
 			.table-condensed>*>tr>th  {
-				padding: 2px !important;
+				/* padding: 2px !important;  */
 			}
 			td.active, th.active{
 				background-color: #f5f5f5;
@@ -68,22 +78,112 @@ stripe_class.data = {}
 				min-width: {{ 25 * (len(tt.dates) + 2) }}px !important;
 				max-width: auto !important;
 			}
-			/* */
+			/* kludge to make these table printable on A4 (hopefully)*/
+			@media print {
+				a[href]:after {
+				content: none !important;
+				}
+				h1{
+					font-size: 200%;
+					text-align: center;
+				
+				}
+				.table-condensed>*>tr>th  {
+					padding: 1px !important;
+				}
+				h1{
+					font-size: 200%;
+					text-align: center;
+
+				}
+				.footer{
+					font-size:bold;
+					font-size: 100%;
+					border: solid thin;
+				}
+				table {
+					width: 100% !important;
+					margin: 0px;
+
+				}
+				.lab_pad_small{
+					border: solid thin;
+					border-width: 1px;
+					margin-left: -1px;
+					margin-top: -1px;
+				}
+				.table{
+				margin-bottom: 0px;
+				}
+				.footer{
+					font-size:bold;
+					font-size: 100%;
+					border: solid thin;
+				}
+				.no_print{
+					display: none;
+				}
+				.container{
+					width: 100%;
+				}
+				.day_name{
+					/* font-size: 50%; */
+				}
+				th, td, tr {
+					font-size: 80%;
+					padding: 0px !important;
+					margin: 0px !important;
+				}
+				tbody tr td{
+					font-size: 140%;
+				}
+				tbody tr th{
+					font-size: 110%;
+				}
+				h2 {
+					font-size: 100%;
+					margin: 0px;
+				}
+				h3 {
+					font-size: 150%;
+					margin: 0px ;
+				}
+				body {
+					font-size: 80% !important;
+				}
+				table {
+					min-width: 1px !important;
+					max-width: auto !important;
+				}
+
+				tbody tr:nth-child(even){
+					border-bottom: solid #000;
+					border-width: 0 1px !important;
+				}
+
+
+			}
+			@page {
+				/*size: 21cm 29.7cm;*/
+				margin: 1mm 1mm 1mm 1mm; /* change the margins as you want them to be. */
+			}
 		</style>
 	</head>
 	<body>
 		% seen_labs = set()
 		<div class="container">
-			<h1>Part {{tt.course.part.upper()}}, {{tt.term.title()}} lab calendars</h1>
+			<h1>Part {{tt.course.part.upper()}}, {{tt.term.title()}} lab calendars {{ tt.course.year }} <small>(last modified {{ tt.course.last_mod }})</small></h1>
+			<div class="no_print">
 			<div class="row">
 				<div class="col-md-6">
-					<p>The table below should match the one issued to you by the department. Group names in the left column link to the web calendars</p>
-					<p>If you spot a mistake, please report it to <code>efw27</code>. I continue to claim no responsibility for missed labs due to false information.</p>
+					<p>Group names in the left column link to the web calendars</p>
+					<p>If you spot a mistake, please report it to the <code>teaching-office</code></p>
 				</div>
 				<div class="col-md-6">
 					<p>Known to work with google calendar, assumed to work with iCalendar and live calendar.</p>
-					<p>If you're lucky, clicking on the links should open the calendars in your default program. If you're not, copy the url of your group link, and follow online instructions for subscribing to an "ICS" or "iCal" web calendar.</p>
+					<p>Clicking on the links should open the calendars in your default program. If you're not, copy the url of your group link, and follow online instructions for subscribing to an "ICS" or "iCal" web calendar.</p>
 				</div>
+			</div>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-bordered table-condensed small" style="table-layout: fixed">
@@ -126,7 +226,7 @@ stripe_class.data = {}
 						<tr>
 							<th colspan="2"></th>
 							% for d in tt.dates:
-								<th title="{{d.isoformat()}}">{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
+								<th class="day_name" title="{{d.isoformat()}}">{{ '{:%a}'.format(d) }}<br />{{ '{:%d}'.format(d) }}</th>
 							% end
 						</tr>
 					</thead>
@@ -178,7 +278,7 @@ stripe_class.data = {}
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l.name}}&NewLine;{{l.location}}"
-										    class="{{ stripe_class([l.code]) }}">
+										    class="{{ stripe_class([l.code]) }} code_{{l.code}}">
 											<tt>{{ l.code }}</tt>
 										</td>
 									% elif len(labs[d]) == 2:
@@ -186,7 +286,7 @@ stripe_class.data = {}
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
-										    class="{{ stripe_class([l1.code, l2.code]) }}">
+										    class="{{ stripe_class([l1.code, l2.code]) }} code_{{l1.code}} code_{{l2.code}}">
 											<tt>
 												% if nrows > 1:
 													{{ l1.code }}<br />{{l2.code}}
@@ -196,7 +296,7 @@ stripe_class.data = {}
 											</tt>
 										</td>
 									% else:
-										<td rowspan="{{nrows}}" class="small">
+										<td rowspan="{{nrows}}" class="small {{ ' '.join("code_"+l.code for l in labs[d]) }}">
 											{{ ','.join(l.code for l in labs[d]) }}
 										</td>
 									% end
@@ -250,17 +350,17 @@ stripe_class.data = {}
 				</table>
 			</div>
 			<div>
-				<h2>Key</h2>
+				<h2 class="no_print">Key</h2>
 				<%
 				import itertools
 				labs = sorted(seen_labs, key=lambda l: (l.group, natural_key(l.code)))
 
-				grouped = [(group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
-				grouped = sorted(grouped, key=lambda i: len(i[1]), reverse=True)
+				grouped = [(group, group!='Other', list(l) ) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
+				grouped = sorted(grouped, key=lambda i: (i[1], len(i[2])), reverse=True)
 				%>
 				<div class="row">
-					% for group, labs in grouped:
-						<div class="col-md-4 col-sm-6">
+					% for group, isother, labs in grouped:
+						<div class="col-md-12 col-sm-6 col-xs-12">
 							<h3>
 								% m = re.match(r'^([A-Z]{2,}(?: [A-Z]+)*)(.*)$', group)
 								% if m:
@@ -272,13 +372,15 @@ stripe_class.data = {}
 							</h3>
 
 							% for lab in labs:
-								<p style="padding-left: 40px">
+								<p style="padding-left: 40px" class="lab_pad_small">
 									<tt class="key" style="background-color: {{color(lab.code, 0.3) }}">{{ lab.code }}</tt>
+									<span class="key_text">
 									% if lab.link:
 										<a target="_blank" href="{{ lab.link }}">{{ lab.name }}</a>
 									% else:
 										{{lab.name}}
 									% end
+									</span>
 									<br />
 									<small class="text-muted">{{ lab.location }}</small>
 								</p>
@@ -287,8 +389,19 @@ stripe_class.data = {}
 					% end
 				</div>
 			</div>
+			<div class="footer">
+				<br class="no_print"/>
+				Morning labs are timetabled in the main lecture timetable. <b> IA </b>: Mon &amp; Fri, 09.00-11.00; Tue &amp; Thu, 11:00-13:00. <b> IB </b>: Mon, 11:00-13:00; Tue, Wed &amp; Thu, 09.00-11.00.
+				<br/>
+				Afternoon labs start at 2pm. The end time may vary, consult the corresponding lab information.
+				<br/>
+				 Laboratory sessions begin five minutes past the hour. Latecomers will be penalised and may be excluded.
+				<br/>
+				file located at: {{ request.urlparts.geturl() }}
+				<br class="no_print"/>
+				<br class="no_print"/>
+			</div>
 		</div>
-		<a href="https://github.com/eric-wieser/engineering-calendar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 		<style>
 			% for cls, codes in stripe_class.data.items():
 				.{{cls}} { background-image: {{ stripes(codes) }}; }

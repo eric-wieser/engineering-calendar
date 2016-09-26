@@ -83,6 +83,7 @@ class CourseYear(object):
 	def __init__(self, part, year, xls_fname):
 		self.part = part
 		self.year = year
+		self.xls_fname = xls_fname
 		self._wb = xlrd.open_workbook(xls_fname, formatting_info=True)
 		self.slots = self._get_slots()
 		self.labs = self._get_labs()
