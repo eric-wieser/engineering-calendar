@@ -27,9 +27,12 @@ def ical_for_term(year, term, courses):
 	return icalendar.Calendar.from_ical(cal_req.text)
 
 pattern = re.compile(r'(.*?)/(.*)\[(\d+)\][CL] (.*)\((.*)\)')
-MatchData = namedtuple('MatchData', 'module name week speaker location')
+MatchData = namedtuple('MatchData', 'code name week lecturer location')
 
-def fixed_events_in(cal):
+def fixed_events_in(cal, name_format=None):
+	if not name_format:
+		name_format = '{code}: {name}'
+
 	events = [
 		event
 		for event in cal.subcomponents
@@ -39,25 +42,25 @@ def fixed_events_in(cal):
 	# add location information
 	for event in events:
 		d = MatchData(*pattern.match(event['summary']).groups())
-		if d.module in course_links:
-			resources = 'http://teaching.eng.cam.ac.uk' + course_links[d.module]
+		if d.code in course_links:
+			resources = 'http://teaching.eng.cam.ac.uk' + course_links[d.code]
 		else:
 			resources = None
 
-		event['summary'] = icalendar.vText(d.module + ': ' + d.name)
+		event['summary'] = icalendar.vText(name_format.format(**d._asdict()))
 		event['location'] = icalendar.vText(d.location + ', ' + cued_address)
 		event['description'] = icalendar.vText(
-			d.speaker + ('\n\n{}'.format(resources) if resources else '')
+			d.lecturer + ('\n\n{}'.format(resources) if resources else '')
 		)
 		event['dtstamp'] = icalendar.vDatetime(last_updated)
 
 	return events
 
-def aggregate_calendars(year, spec_data):
+def aggregate_calendars(year, spec_data, **kwargs):
 	events = []
 	for term, courses in spec_data.items():
 		cal = ical_for_term(year, term, courses)
-		events += fixed_events_in(cal)
+		events += fixed_events_in(cal, **kwargs)
 
 	cal = make_blank_calendar(
 		'CUED Lectures {}'.format(year),

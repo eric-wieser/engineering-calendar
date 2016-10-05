@@ -17,7 +17,7 @@ class ICalPlugin(object):
 			except HTTPError as e:
 				rv = e
 
-			text_override = request.url.endswith('.txt')
+			text_override = request.path.endswith('.txt')
 
 			if isinstance(rv, icalendar.Calendar):
 				ical_response = rv.to_ical()
@@ -69,12 +69,13 @@ def ia_term_calendar(year, part, term, group):
 	return calendarmaker.construct(course_year, term, group)
 
 @route(r'/<year:int>/lectures/<course_data>.ics')
+@route(r'/<year:int>/lectures/<course_data>.txt')
 def fixed_lectures(year, course_data):
 	try:
 		spec = lectures.parse_lecture_spec(course_data)
 	except ValueError as e:
 		raise HTTPError(400, "Bad request: {}".format(e))
-	cal = lectures.aggregate_calendars(year, spec)
+	cal = lectures.aggregate_calendars(year, spec, name_format=request.params.name_format)
 	return cal
 
 
