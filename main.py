@@ -4,6 +4,7 @@ import icalendar
 
 import calendarmaker
 from objects import CourseYear
+import lectures
 
 class ICalPlugin(object):
 	name = 'ical'
@@ -66,6 +67,16 @@ def ia_term_calendar(year, part, term):
 def ia_term_calendar(year, part, term, group):
 	course_year = CourseYear.get(part, year)
 	return calendarmaker.construct(course_year, term, group)
+
+@route(r'/<year:int>/lectures/<course_data>.ics')
+def fixed_lectures(year, course_data):
+	try:
+		spec = lectures.parse_lecture_spec(course_data)
+	except ValueError as e:
+		raise HTTPError(400, "Bad request: {}".format(e))
+	cal = lectures.aggregate_calendars(year, spec)
+	return cal
+
 
 # legacy urls:
 @route(r'/<part:re:ia|ib>/<term:re:mich|lent|easter>/examples.ics')
