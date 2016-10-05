@@ -1,6 +1,7 @@
 import re
 from collections import namedtuple
 from datetime import datetime
+import json
 
 import icalendar
 import pytz
@@ -8,10 +9,14 @@ import requests
 
 from calendarmaker import cued_address, make_blank_calendar
 
+with open("courselinks.json") as f:
+	course_links = json.load(f)
+
 last_updated = pytz.utc.localize(datetime.utcnow())
 
 def ical_for_term(year, term, courses):
 	year_str = '{:4d}_{:02d}'.format(year, (year + 1)%100)
+
 	cal_url = "http://td.eng.cam.ac.uk/tod/public/view_ical.php?yearval={year}&term={term}&course={course}".format(
 		year=year_str,
 		term=term[0].upper(),
@@ -34,11 +39,15 @@ def fixed_events_in(cal):
 	# add location information
 	for event in events:
 		d = MatchData(*pattern.match(event['summary']).groups())
+		if d.module in course_links:
+			resources = 'http://teaching.eng.cam.ac.uk' + course_links[d.module]
+		else:
+			resources = None
+
 		event['summary'] = icalendar.vText(d.module + ': ' + d.name)
 		event['location'] = icalendar.vText(d.location + ', ' + cued_address)
 		event['description'] = icalendar.vText(
-			d.speaker + '\n\n' +
-			'Resources: http://to.eng.cam.ac.uk/teaching/courses/y1/'
+			d.speaker + ('\n\n{}'.format(resources) if resources else '')
 		)
 		event['dtstamp'] = icalendar.vDatetime(last_updated)
 
