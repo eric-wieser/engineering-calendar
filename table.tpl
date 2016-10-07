@@ -255,8 +255,14 @@ stripe_class.data = {}
 				import itertools
 				labs = sorted(seen_labs, key=lambda l: (l.group, natural_key(l.code)))
 
-				grouped = [(group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
-				grouped = sorted(grouped, key=lambda i: len(i[1]), reverse=True)
+				grouped = [
+					(group, list(l))
+					for group, l in itertools.groupby(labs, key=lambda l: l.group)
+				]
+				grouped = sorted(grouped,
+					key=lambda i: (i[0] != 'Other', len(i[1])),
+					reverse=True
+				)
 				%>
 				<div class="row">
 					% for group, labs in grouped:
