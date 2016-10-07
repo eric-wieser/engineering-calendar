@@ -71,7 +71,8 @@ stripe_class.data = {}
 			.table-condensed>*>tr>th  {
 				/* padding: 2px !important;  */
 			}
-			td.active, th.active{
+			td.active, th.active,
+			td.passive, th.passive{
 				background-color: #f5f5f5;
 			}
 			table {
@@ -257,47 +258,52 @@ stripe_class.data = {}
 
 									<%
 									# iterate over adjacent entries which match vertically
-									this_groups = [group]
+									nrows = 1
 									for g in tt.groups[gi+1:]:
 										if tt.labs_for(g)[d] == ls and ls:
-											this_groups.append(g)
+											nrows += 1
 											skip.add((g, d))
 										else:
 											break
 										end
 									end
-									nrows = len(this_groups)
+
+									# Frustratingly, the template engine in the
+									# PyPI version of bottle does not contain my patch
+									# which allows line wrapping in comprehensions
+									this_groups = [g for g in tt.groups if not set(tt.labs_for(g)[d]).isdisjoint(set(ls))]
+
+									def _strify_times(t):
+										return ', '.join('{:%H:%M} - {:%H:%M}'.format(s.time(), e.time()) for s, e in t)
+									end
+									hover_text = '\n\n'.join(
+										'{}\n{}\n{}'.format(l.name, _strify_times(l.times_on(d)), l.location) for l in ls
+									)
 									%>
 
 									% if len(ls) == 0:
-										<td data-group="{{ group }}"></td>
-									% elif len(ls) == 1:
-										% l = ls[0];
-
-
+										<td data-group="{{ group }}"
+										    data-date="{{ d.isoformat() }}"></td>
+									% else:
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
-										    title="{{l.name}}&NewLine;{{l.location}}"
-										    class="{{ stripe_class([l.code]) }} code_{{l.code}}">
-											<tt>{{ l.code }}</tt>
-										</td>
-									% elif len(labs[d]) == 2:
-										% l1, l2 = ls;
-										<td rowspan="{{nrows}}"
-										    data-group="{{ ','.join(this_groups) }}"
-										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
-										    class="{{ stripe_class([l1.code, l2.code]) }} code_{{l1.code}} code_{{l2.code}}">
+										    data-date="{{ d.isoformat() }}"
+										    title="{{! _escape(hover_text).replace('\n', '&NewLine;') }}"
+										    class="{{ stripe_class([l.code for l in ls]) }} {{ ' '.join('code_{}'.format(l.code) for l in ls) }}">
 											<tt>
-												% if nrows > 1:
-													{{ l1.code }}<br />{{l2.code}}
+												% if len(ls) == 1:
+													{{ l.code }}
+												% elif len(ls) == 2:
+													% l1, l2 = ls
+													% if nrows > 1:
+														{{ l1.code }}<br />{{l2.code}}
+													% else:
+														{{ l1.code }}&middot;{{l2.code}}
+													% end
 												% else:
-													{{ l1.code }}&middot;{{l2.code}}
+													{{ ','.join(l.code for l in ls) }}
 												% end
 											</tt>
-										</td>
-									% else:
-										<td rowspan="{{nrows}}" class="small {{ ' '.join("code_"+l.code for l in labs[d]) }}">
-											{{ ','.join(l.code for l in labs[d]) }}
 										</td>
 									% end
 								% end
@@ -355,11 +361,14 @@ stripe_class.data = {}
 				import itertools
 				labs = sorted(seen_labs, key=lambda l: (l.group, natural_key(l.code)))
 
-				grouped = [(group, group!='Other', list(l) ) for group, l in itertools.groupby(labs, key=lambda l: l.group)]
-				grouped = sorted(grouped, key=lambda i: (i[1], len(i[2])), reverse=True)
+				grouped = [ (group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group) ]
+				grouped = sorted(grouped,
+					key=lambda i: (i[0] != 'Other', len(i[1])),
+					reverse=True
+				)
 				%>
 				<div class="row">
-					% for group, isother, labs in grouped:
+					% for group, labs in grouped:
 						<div class="col-md-12 col-sm-6 col-xs-12">
 							<h3>
 								% m = re.match(r'^([A-Z]{2,}(?: [A-Z]+)*)(.*)$', group)
@@ -405,7 +414,8 @@ stripe_class.data = {}
 		<style>
 			% for cls, codes in stripe_class.data.items():
 				.{{cls}} { background-image: {{ stripes(codes) }}; }
-				.{{cls}}.active { background-image: {{ stripes(codes, 0.3) }}; }
+				.{{cls}}.passive { background-image: {{ stripes(codes, 0.2) }}; }
+				.{{cls}}.active { background-image: {{ stripes(codes, 0.4) }}; }
 			% end
 		</style>
 		<script>
@@ -424,13 +434,19 @@ stripe_class.data = {}
 			});
 			$a.hover(function() {
 				var dgroups = $(this).data('group').split(',');
+				var date = $(this).data('date');
 				$.each(dgroups, function() {
-					by_group[this].addClass('active');
+					by_group[this].each(function() {
+						$(this).addClass($(this).data('date') == date ? 'active' : 'passive');
+					});
 				});
 			}, function() {
 				var dgroups = $(this).data('group').split(',');
+				var date = $(this).data('date');
 				$.each(dgroups, function() {
-					by_group[this].removeClass('active');
+					by_group[this].each(function() {
+						$(this).removeClass($(this).data('date') == date ? 'active' : 'passive');
+					});
 				});
 			});
 		});
