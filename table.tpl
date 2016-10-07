@@ -167,41 +167,43 @@ stripe_class.data = {}
 											break
 										end
 									end
+
+									# Frustratingly, the template engine in the
+									# PyPI version of bottle does not contain my patch
+									# which allows line wrapping in comprehensions
 									this_groups = [g for g in tt.groups if not set(tt.labs_for(g)[d]).isdisjoint(set(ls))]
+
+									def _strify_times(t):
+										return ', '.join('{:%H:%M} - {:%H:%M}'.format(s.time(), e.time()) for s, e in t)
+									end
+									hover_text = '\n\n'.join(
+										'{}\n{}\n{}'.format(l.name, _strify_times(l.times_on(d)), l.location) for l in ls
+									)
 									%>
 
 									% if len(ls) == 0:
 										<td data-group="{{ group }}"
 										    data-date="{{ d.isoformat() }}"></td>
-									% elif len(ls) == 1:
-										% l = ls[0];
-
-
+									% else:
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
 										    data-date="{{ d.isoformat() }}"
-										    title="{{l.name}}&NewLine;{{l.location}}"
-										    class="{{ stripe_class([l.code]) }}">
-											<tt>{{ l.code }}</tt>
-										</td>
-									% elif len(labs[d]) == 2:
-										% l1, l2 = ls;
-										<td rowspan="{{nrows}}"
-										    data-group="{{ ','.join(this_groups) }}"
-										    data-date="{{ d.isoformat() }}"
-										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
-										    class="{{ stripe_class([l1.code, l2.code]) }}">
+										    title="{{! _escape(hover_text).replace('\n', '&NewLine;') }}"
+										    class="{{ stripe_class([l.code for l in ls]) }}">
 											<tt>
-												% if nrows > 1:
-													{{ l1.code }}<br />{{l2.code}}
+												% if len(ls) == 1:
+													{{ l.code }}
+												% elif len(ls) == 2:
+													% l1, l2 = ls
+													% if nrows > 1:
+														{{ l1.code }}<br />{{l2.code}}
+													% else:
+														{{ l1.code }}&middot;{{l2.code}}
+													% end
 												% else:
-													{{ l1.code }}&middot;{{l2.code}}
+													{{ ','.join(l.code for l in ls) }}
 												% end
 											</tt>
-										</td>
-									% else:
-										<td rowspan="{{nrows}}" class="small">
-											{{ ','.join(l.code for l in labs[d]) }}
 										</td>
 									% end
 								% end
