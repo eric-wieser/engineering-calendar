@@ -61,7 +61,8 @@ stripe_class.data = {}
 			.table-condensed>*>tr>th  {
 				padding: 2px !important;
 			}
-			td.active, th.active{
+			td.active, th.active,
+			td.passive, th.passive{
 				background-color: #f5f5f5;
 			}
 			table {
@@ -157,26 +158,28 @@ stripe_class.data = {}
 
 									<%
 									# iterate over adjacent entries which match vertically
-									this_groups = [group]
+									nrows = 1
 									for g in tt.groups[gi+1:]:
 										if tt.labs_for(g)[d] == ls and ls:
-											this_groups.append(g)
+											nrows += 1
 											skip.add((g, d))
 										else:
 											break
 										end
 									end
-									nrows = len(this_groups)
+									this_groups = [g for g in tt.groups if not set(tt.labs_for(g)[d]).isdisjoint(set(ls))]
 									%>
 
 									% if len(ls) == 0:
-										<td data-group="{{ group }}"></td>
+										<td data-group="{{ group }}"
+										    data-date="{{ d.isoformat() }}"></td>
 									% elif len(ls) == 1:
 										% l = ls[0];
 
 
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
+										    data-date="{{ d.isoformat() }}"
 										    title="{{l.name}}&NewLine;{{l.location}}"
 										    class="{{ stripe_class([l.code]) }}">
 											<tt>{{ l.code }}</tt>
@@ -185,6 +188,7 @@ stripe_class.data = {}
 										% l1, l2 = ls;
 										<td rowspan="{{nrows}}"
 										    data-group="{{ ','.join(this_groups) }}"
+										    data-date="{{ d.isoformat() }}"
 										    title="{{l1.name}}&NewLine;{{l1.location}}&NewLine;&NewLine;{{l2.name}}&NewLine;{{l2.location}}"
 										    class="{{ stripe_class([l1.code, l2.code]) }}">
 											<tt>
@@ -255,10 +259,7 @@ stripe_class.data = {}
 				import itertools
 				labs = sorted(seen_labs, key=lambda l: (l.group, natural_key(l.code)))
 
-				grouped = [
-					(group, list(l))
-					for group, l in itertools.groupby(labs, key=lambda l: l.group)
-				]
+				grouped = [ (group, list(l)) for group, l in itertools.groupby(labs, key=lambda l: l.group) ]
 				grouped = sorted(grouped,
 					key=lambda i: (i[0] != 'Other', len(i[1])),
 					reverse=True
@@ -298,7 +299,8 @@ stripe_class.data = {}
 		<style>
 			% for cls, codes in stripe_class.data.items():
 				.{{cls}} { background-image: {{ stripes(codes) }}; }
-				.{{cls}}.active { background-image: {{ stripes(codes, 0.3) }}; }
+				.{{cls}}.passive { background-image: {{ stripes(codes, 0.2) }}; }
+				.{{cls}}.active { background-image: {{ stripes(codes, 0.4) }}; }
 			% end
 		</style>
 		<script>
@@ -317,13 +319,19 @@ stripe_class.data = {}
 			});
 			$a.hover(function() {
 				var dgroups = $(this).data('group').split(',');
+				var date = $(this).data('date');
 				$.each(dgroups, function() {
-					by_group[this].addClass('active');
+					by_group[this].each(function() {
+						$(this).addClass($(this).data('date') == date ? 'active' : 'passive');
+					});
 				});
 			}, function() {
 				var dgroups = $(this).data('group').split(',');
+				var date = $(this).data('date');
 				$.each(dgroups, function() {
-					by_group[this].removeClass('active');
+					by_group[this].each(function() {
+						$(this).removeClass($(this).data('date') == date ? 'active' : 'passive');
+					});
 				});
 			});
 		});
