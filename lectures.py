@@ -64,7 +64,7 @@ def aggregate_calendars(year, spec_data, **kwargs):
 
 	cal = make_blank_calendar(
 		'CUED Lectures {}'.format(year),
-		description=repr(spec_data)
+		description='Courses: {}/nLast updated:{}'.format(spec_data, last_updated)
 	)
 	cal.subcomponents = events
 	return cal
