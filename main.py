@@ -72,7 +72,7 @@ def ia_term_calendar(year, part, term, group):
 @route(r'/<year:int>/lectures/<course_data>.txt')
 def fixed_lectures(year, course_data):
 	try:
-		spec = lectures.parse_lecture_spec(course_data)
+		spec = lectures.LectureSpec(course_data)
 	except ValueError as e:
 		raise HTTPError(400, "Bad request: {}".format(e))
 	cal = lectures.aggregate_calendars(year, spec, name_format=request.params.name_format)

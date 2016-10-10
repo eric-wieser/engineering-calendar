@@ -1,5 +1,5 @@
 import re
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 from datetime import datetime
 import json
 
@@ -58,7 +58,7 @@ def fixed_events_in(cal, name_format=None):
 
 def aggregate_calendars(year, spec_data, **kwargs):
 	events = []
-	for term, courses in spec_data.items():
+	for term, courses in spec_data.terms:
 		cal = ical_for_term(year, term, courses)
 		events += fixed_events_in(cal, **kwargs)
 
@@ -69,47 +69,81 @@ def aggregate_calendars(year, spec_data, **kwargs):
 	cal.subcomponents = events
 	return cal
 
-def parse_lecture_spec(spec_str):
-	"""
-	Takes a string describing courses and terms, and converts it to a dictionary:
-
-	>>> parse_lecture_spec('IA') == dict(michaelmas={'IA'}, lent={'IA'}, easter={'IA'})
-	True
-	>>> parse_lecture_spec('IA,IB:m') == dict(michaelmas={'IA', 'IB'}, lent={'IA'}, easter={'IA'})
-	True
-	"""
+class LectureSpec:
 	all_terms = ['michaelmas', 'lent', 'easter']
-	by_term = {t: set() for t in all_terms}
-	for entry in spec_str.split(','):
-		# parse out the term specifier
-		parts = entry.split(':')
-		if len(parts) > 2:
-			raise ValueError('Too many colons in {!r} - expected course:term'.format(entry))
-		name = parts[0]
-		if not name:
-			raise ValueError('Course name must not be empty!')
-		if len(parts) == 1:
-			terms = all_terms
-		else:
-			term_name = parts[1]
-			if not term_name:
-				raise ValueError('Term name, if specified, must not be empty!')
-			term = next((t for t in all_terms if t.startswith(term_name)), None)
-			if not term:
-				raise ValueError("Unknown term {!r}".format(term_name))
-			terms = [term]
 
-		# populate the data
-		for term in terms:
-			by_term[term].add(name)
+	def __init__(self, spec_str):
+		"""
+		Takes a string describing courses and terms, and converts it to a dictionary:
 
-	return by_term
+		>>> LectureSpec('IA')._data == dict(michaelmas={'IA'}, lent={'IA'}, easter={'IA'})
+		True
+		>>> LectureSpec('IA,IB:m')._data == dict(michaelmas={'IA', 'IB'}, lent={'IA'}, easter={'IA'})
+		True
+		"""
+		by_term = OrderedDict(
+			(t, set())
+			for t in LectureSpec.all_terms
+		)
+		for entry in spec_str.split(','):
+			entry = entry.strip()
+			# parse out the term specifier
+			parts = entry.split(':')
+			if len(parts) > 2:
+				raise ValueError('Too many colons in {!r} - expected course:term'.format(entry))
+			name = parts[0]
+			if not name:
+				raise ValueError('Course name must not be empty!')
+			if len(parts) == 1:
+				terms = LectureSpec.all_terms
+			else:
+				term_name = parts[1]
+				if not term_name:
+					raise ValueError('Term name, if specified, must not be empty!')
+				term = next((t for t in LectureSpec.all_terms if t.startswith(term_name)), None)
+				if not term:
+					raise ValueError("Unknown term {!r}".format(term_name))
+				terms = [term]
+
+			# populate the data
+			for term in terms:
+				by_term[term].add(name)
+
+		self._data = by_term
+
+	@property
+	def terms(self):
+		return self._data.items()
+
+	def __str__(self):
+		in_all_terms = set.intersection(*self._data.values())
+		rest = OrderedDict(
+			(k, v - in_all_terms)
+			for k, v in self._data.items()
+		)
+		return ', '.join(
+			[str(v) for v in sorted(in_all_terms)] +
+			[
+				'{}:{}'.format(v, term)
+				for term, values in rest.items()
+				for v in sorted(values)
+			]
+		)
+
+	def __repr__(self):
+		"""
+		>>> LectureSpec('IA:lent,IB:m,IIB')
+		LectureSpec('IIB, IB:michaelmas, IA:lent')
+		>>> eval(repr(_))
+		LectureSpec('IIB, IB:michaelmas, IA:lent')
+		"""
+		return '{}({!r})'.format(type(self).__name__, str(self))
 
 
 if __name__ == '__main__':
 	import doctest
 	doctest.testmod()
 	# print(fixed_events_in(ical_for_term(2016, term='lent', courses=['IIB'])))
-	spec = parse_lecture_spec('IA:lent,IB:m,IIB')
+	spec = LectureSpec('IA:lent,IB:m,IIB')
 	c = aggregate_calendars(2016, spec)
 	print(c)
