@@ -7,6 +7,7 @@
 		<link rel="icon" type="image/png" href="http://cdn.dustball.com/calendar.png">
 		<title>CUED calendars</title>
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+                <style> footer{	padding-top: 5em;}</style>
 	</head>
 	<body>
 		<div class="container">
@@ -42,6 +43,12 @@
 					% end
 				</div>
 			% end
+   			<footer>		
+      				<p>
+        			The software used to generate these pages was written by Eric Weiser an undergraduate at CUED. If you wish to contribute any fixes or changes to this software an active fork of his original code can be found on
+        			<a href="https://github.com/S-Stephen/engineering-calendar">GitHub</a>.
+      				</p>
+  			</footer>
 		</div>
 	</body>
 </html>
