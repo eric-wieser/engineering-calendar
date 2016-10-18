@@ -89,9 +89,15 @@ start_one()
       echo 1 "Can't find $GUNICORN"
       return 1
     fi
-    
-    sudo -E -u $USER $GUNICORN $args --config=$CONFIG_FILE -- $APP_MODULE
-     echo "sudo -E -u $USER $GUNICORN $args --config=$CONFIG_FILE -- $APP_MODULE"
+
+    start_daemon -u $USER  "$GUNICORN $args --config=$CONFIG_FILE -- $APP_MODULE"
+    echo "start_daemon -u $USER  '$GUNICORN $args --config=$CONFIG_FILE -- $APP_MODULE'"    
+    # runuser -u and -c are mutually exclusive
+    #/sbin/runuser -u $USER -s /bin/bash -c "$GUNICORN $args --config=$CONFIG_FILE -- $APP_MODULE"
+    # echo "/sbin/runuser -u $USER -s /bin/bash -c '$GUNICORN $args --config=$CONFIG_FILE -- $APP_MODULE'"
+    # sudo requires tty
+    #sudo -E -u $USER $GUNICORN $args --config=$CONFIG_FILE -- $APP_MODULE
+    # echo "sudo -E -u $USER $GUNICORN $args --config=$CONFIG_FILE -- $APP_MODULE"
       
     for var in $CONFIG_VARS; do
       unset $var
