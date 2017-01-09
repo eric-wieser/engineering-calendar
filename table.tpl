@@ -173,7 +173,7 @@ stripe_class.data = {}
 	<body>
 		% seen_labs = set()
 		<div class="container">
-			<h1>Part {{tt.course.part.upper()}}, {{tt.term.title()}} lab calendars {{ tt.course.year }} <small>(last modified {{ tt.course.last_mod }})</small></h1>
+			<h1>Part {{tt.course.part.upper()}}, {{tt.term.title()}} lab calendars {{ tt.course.year }} - {{ tt.course.year+1 }} <small>(last modified {{ tt.course.last_mod }})</small></h1>
 			<div class="no_print">
 			<div class="row">
 				<div class="col-md-6">
