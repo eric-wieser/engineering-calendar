@@ -45,7 +45,7 @@
 			% end
    			<footer>		
       				<p>
-        			The software used to generate these pages was written by Eric Weiser an undergraduate at CUED. If you wish to contribute any fixes or changes to this software an active fork of his original code can be found on
+        			The software used to generate these pages was written by Eric Wieser, an undergraduate at CUED. If you wish to contribute any fixes or changes to this software an active fork of his original code can be found on
         			<a href="https://github.com/S-Stephen/engineering-calendar">GitHub</a>.
       				</p>
   			</footer>
