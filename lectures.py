@@ -15,6 +15,9 @@ with open("courselinks.json") as f:
 last_updated = pytz.utc.localize(datetime.utcnow())
 
 def ical_for_term(year, term, courses):
+	if not courses:
+		return icalendar.Calendar()
+
 	year_str = '{:4d}_{:02d}'.format(year, (year + 1)%100)
 
 	cal_url = "http://td.eng.cam.ac.uk/tod/public/view_ical.php?yearval={year}&term={term}&course={course}".format(
@@ -24,6 +27,9 @@ def ical_for_term(year, term, courses):
 	)
 	cal_req = requests.get(cal_url)
 	cal_req.raise_for_status()
+	if cal_req.text.startswith('no timetable committed for '):
+		return icalendar.Calendar()
+
 	return icalendar.Calendar.from_ical(cal_req.text)
 
 pattern = re.compile(r'(.*?)/(.*)\[(\d+)\][CL] (.*)\((.*)\)')
