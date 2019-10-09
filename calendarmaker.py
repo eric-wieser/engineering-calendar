@@ -9,6 +9,15 @@ timezone = pytz.timezone("Europe/London")
 
 cued_address = 'Cambridge University Engineering Department, Cambridge, United Kingdom'
 
+def make_blank_calendar(name, description=None):
+	cal = icalendar.Calendar()
+	cal['X-WR-CALNAME'] = name
+	if description:
+		cal['X-WR-CALDESC'] = description
+	cal['VERSION'] = '2.0'
+	cal['PRODID'] = '-//ericwieser.me//CUED calendars//EN'
+	return cal
+
 def construct(course_year, term, lab_group=None, examples=False):
 	if lab_group:
 		evts = labs_for_term(course_year, term, lab_group)
@@ -26,10 +35,7 @@ def construct(course_year, term, lab_group=None, examples=False):
 	else:
 		raise TypeError('Invalid arguments')
 
-	cal = icalendar.Calendar()
-	cal['X-WR-CALNAME'] = name
-	cal['VERSION'] = '2.0'
-	cal['PRODID'] = '-//ericwieser.me//CUED calendars//EN'
+	cal = make_blank_calendar(name)
 	cal.subcomponents += evts
 
 	return cal
